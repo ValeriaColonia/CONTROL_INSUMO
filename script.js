@@ -1011,10 +1011,10 @@ function registrarSalida(event) {
 
 
 /* =====================================================
-   FECHA ACTUAL
+   FECHA ACTUAL Y BLOQUEO DE DÍAS FUTUROS
 ===================================================== */
 
- function establecerFechaActual() {
+function establecerFechaActual() {
 
     const campo =
         document.getElementById("fechaConsumo");
@@ -1043,10 +1043,18 @@ function registrarSalida(event) {
         ).padStart(2, "0");
 
 
-    campo.value =
+    const fechaFormateada = 
         `${año}-${mes}-${dia}`;
-        
-    // Agregar esta línea para que calcule el rango al cargar la página
+
+
+    // Establece la fecha de hoy por defecto
+    campo.value = fechaFormateada;
+    
+    // Bloquea el calendario para no elegir fechas futuras
+    campo.max = fechaFormateada;
+
+
+    // Calcula el texto del rango de la semana al cargar
     actualizarTextoSemana();
 
 }
