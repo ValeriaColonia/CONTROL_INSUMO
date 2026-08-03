@@ -549,51 +549,97 @@ td.acciones {
 }
 
 /* =====================================================
-   ESTILOS PIE DE PÁGINA (AUTORÍA Y OBRA DE ARTE)
+   FOOTER
 ===================================================== */
-.footer-autor {
-    width: calc(100% - 70px);
-    max-width: 1600px;
-    margin: 40px auto 30px auto;
-    padding: 30px 20px;
-    text-align: center;
-    background: white;
-    border-top: 4px solid #18527e;
-    border-radius: 14px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-    font-family: inherit;
+
+.footer-autor{
+
+    margin-top:60px;
+
+    background:#ffffff;
+
+    border-top:5px solid #18527e;
+
+    box-shadow:0 -3px 15px rgba(0,0,0,.08);
+
+    padding:40px 20px;
+
 }
 
-.footer-contenido {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
+.footer-contenido{
+
+    max-width:900px;
+
+    margin:auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
 }
 
-.footer-contenido p {
-    margin: 0;
-    color: #18527e;
-    font-size: 17px;
-    font-weight: 500;
+.gatito-img{
+
+    width:180px;
+
+    height:auto;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.18);
+
+    transition:.3s;
+
+    margin-bottom:20px;
+
 }
 
-.gatito-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #f1f4f7;
-    padding: 12px;
-    border-radius: 12px;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);
+.gatito-img:hover{
+
+    transform:scale(1.05);
+
 }
 
-.gatito-img {
-    width: 250px; /* Tamaño perfecto y elegante para apreciar la pintura */
-    height: auto;
-    display: block;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+.footer-contenido h3{
+
+    margin:0;
+
+    color:#18527e;
+
+    font-size:21px;
+
+    font-weight:600;
+
+}
+
+.footer-contenido .autor{
+
+    margin:8px 0;
+
+    font-size:19px;
+
+    color:#222;
+
+}
+
+.footer-contenido .descripcion{
+
+    margin-top:5px;
+
+    color:#6c757d;
+
+    font-size:15px;
+
+    max-width:500px;
+
+    line-height:1.5;
+
 }
 
 
