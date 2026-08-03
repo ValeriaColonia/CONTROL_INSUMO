@@ -531,7 +531,11 @@
                 <input
                     type="date"
                     id="fechaConsumo"
+                    onchange="actualizarTextoSemana()"
                 >
+                
+                <!-- Aquí aparecerá el texto dinámico de la semana -->
+                <small id="textoRangoSemana" style="display: block; margin-top: 5px; color: #555; font-weight: 600;"></small>
 
             </div>
 
