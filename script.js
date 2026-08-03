@@ -1014,7 +1014,7 @@ function registrarSalida(event) {
    FECHA ACTUAL
 ===================================================== */
 
-function establecerFechaActual() {
+ function establecerFechaActual() {
 
     const campo =
         document.getElementById("fechaConsumo");
@@ -1045,6 +1045,9 @@ function establecerFechaActual() {
 
     campo.value =
         `${año}-${mes}-${dia}`;
+        
+    // Agregar esta línea para que calcule el rango al cargar la página
+    actualizarTextoSemana();
 
 }
 
