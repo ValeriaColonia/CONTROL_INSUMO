@@ -1315,11 +1315,20 @@ function formatearFecha(fecha) {
 ===================================================== */
 
 function actualizarTextoSemana() {
-    const inputFecha = document.getElementById("fechaConsumo").value;
+    const campo = document.getElementById("fechaConsumo");
+    const inputFecha = campo.value;
     const textoSemana = document.getElementById("textoRangoSemana");
 
     if (!inputFecha) {
         textoSemana.textContent = "";
+        return;
+    }
+
+    // VALIDACIÓN EXTRA: Si la fecha escrita es mayor a hoy, la forzamos al día actual
+    if (campo.max && inputFecha > campo.max) {
+        alert("No puedes consultar una semana en el futuro. Se ajustará a la fecha actual.");
+        campo.value = campo.max;
+        actualizarTextoSemana(); // Recalcula con la fecha corregida
         return;
     }
 
@@ -1351,7 +1360,6 @@ function actualizarTextoSemana() {
         textoSemana.textContent = `Semana del ${lunes.getDate()} de ${mesLunes} al ${domingo.getDate()} de ${mesDomingo} de ${año}`;
     }
 }
-
 
 /* =====================================================
    ESCAPAR TEXTO
