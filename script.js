@@ -1299,6 +1299,48 @@ function formatearFecha(fecha) {
 
 }
 
+/* =====================================================
+   ACTUALIZAR TEXTO RANGO DE SEMANA
+===================================================== */
+
+function actualizarTextoSemana() {
+    const inputFecha = document.getElementById("fechaConsumo").value;
+    const textoSemana = document.getElementById("textoRangoSemana");
+
+    if (!inputFecha) {
+        textoSemana.textContent = "";
+        return;
+    }
+
+    // Dividimos la fecha para evitar desfases de zona horaria
+    const partes = inputFecha.split('-');
+    const fecha = new Date(partes[0], partes[1] - 1, partes[2]);
+
+    // Obtener el día de la semana (0 = Domingo, 1 = Lunes, ..., 6 = Sábado)
+    let diaSemana = fecha.getDay();
+    
+    // Ajustar para que el Lunes sea el día de inicio
+    let diferenciaLunes = diaSemana === 0 ? -6 : 1 - diaSemana;
+
+    const lunes = new Date(fecha);
+    lunes.setDate(fecha.getDate() + diferenciaLunes);
+
+    const domingo = new Date(lunes);
+    domingo.setDate(lunes.getDate() + 6);
+
+    const opcionesMes = { month: 'long' };
+    const mesLunes = lunes.toLocaleDateString('es-ES', opcionesMes);
+    const mesDomingo = domingo.toLocaleDateString('es-ES', opcionesMes);
+    const año = domingo.getFullYear();
+
+    // Formatear el texto dependiendo de si la semana cruza entre dos meses
+    if (mesLunes === mesDomingo) {
+        textoSemana.textContent = `Semana del ${lunes.getDate()} al ${domingo.getDate()} de ${mesLunes} de ${año}`;
+    } else {
+        textoSemana.textContent = `Semana del ${lunes.getDate()} de ${mesLunes} al ${domingo.getDate()} de ${mesDomingo} de ${año}`;
+    }
+}
+
 
 /* =====================================================
    ESCAPAR TEXTO
