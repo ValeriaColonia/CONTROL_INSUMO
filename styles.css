@@ -20,42 +20,6 @@ body {
 }
 
 /* =====================================================
-   ESTILOS PIE DE PÁGINA (AUTORÍA Y GATITO)
-===================================================== */
-.footer-autor {
-    margin-top: 40px;
-    padding: 20px 0;
-    text-align: center;
-    border-top: 1px solid #e0e0e0;
-    color: #555;
-    font-family: inherit;
-}
-
-.footer-contenido {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-}
-
-.gatito-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.gatito-img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 50%;
-    background-color: #fff;
-    padding: 2px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-
-/* =====================================================
    ENCABEZADO
 ===================================================== */
 
@@ -582,6 +546,57 @@ td.acciones {
 .filtros-consumo .campo {
 
     width: 280px;
+}
+
+/* =====================================================
+   ESTILOS PIE DE PÁGINA CON INTENCIÓN Y ARTE
+===================================================== */
+.footer-autor {
+    margin: 50px auto 30px auto;
+    padding: 25px 20px;
+    text-align: center;
+    background: linear-gradient(135deg, #f9f4f9 0%, #f0f4f8 100%);
+    border-top: 2px dashed #d1c4e9;
+    border-radius: 12px;
+    max-width: 450px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    font-family: inherit;
+}
+
+.footer-contenido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-contenido p {
+    margin: 0;
+    color: #4a4a4a;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+}
+
+.gatito-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    padding: 8px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.gatito-container:hover {
+    transform: translateY(-3px);
+}
+
+.gatito-img {
+    width: 180px; /* Tamaño ideal para apreciar la pintura sin que sea gigante */
+    height: auto;
+    display: block;
+    border-radius: 8px;
 }
 
 
