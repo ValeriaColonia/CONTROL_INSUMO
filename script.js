@@ -3,15 +3,9 @@
    LocalStorage
 ===================================================== */
 
-/* =====================================================
-   CLAVE DEL LOCAL STORAGE
-===================================================== */
 const CLAVE_INVENTARIO = "inventario_insumos";
 const CLAVE_SALIDAS = "salidas_insumos";
 
-/* =====================================================
-   LISTA DE INSUMOS
-===================================================== */
 const insumos = [
     "TUBO TAPA AMARILLA IMPROVE (5 ml)",
     "GRADILLA X 100",
@@ -78,9 +72,6 @@ const insumos = [
     "SOLUCION CONTROL DB LIFE NIVEL 2"
 ];
 
-/* =====================================================
-   PRESENTACIONES
-===================================================== */
 const presentaciones = {
     "TUBO TAPA AMARILLA IMPROVE (5 ml)": "GRADILLA X 100",
     "GRADILLA X 100": "GRADILLA X 100",
@@ -147,80 +138,40 @@ const presentaciones = {
     "SOLUCION CONTROL DB LIFE NIVEL 2": "UNIDAD"
 };
 
-/* =====================================================
-   CARGAR DATOS
-===================================================== */
 function obtenerInventario() {
-    return JSON.parse(
-        localStorage.getItem(CLAVE_INVENTARIO)
-    ) || [];
+    return JSON.parse(localStorage.getItem(CLAVE_INVENTARIO)) || [];
 }
 
 function guardarInventario(inventario) {
-    localStorage.setItem(
-        CLAVE_INVENTARIO,
-        JSON.stringify(inventario)
-    );
+    localStorage.setItem(CLAVE_INVENTARIO, JSON.stringify(inventario));
 }
 
 function obtenerSalidas() {
-    return JSON.parse(
-        localStorage.getItem(CLAVE_SALIDAS)
-    ) || [];
+    return JSON.parse(localStorage.getItem(CLAVE_SALIDAS)) || [];
 }
 
 function guardarSalidas(salidas) {
-    localStorage.setItem(
-        CLAVE_SALIDAS,
-        JSON.stringify(salidas)
-    );
+    localStorage.setItem(CLAVE_SALIDAS, JSON.stringify(salidas));
 }
 
-/* =====================================================
-   INICIAR
-===================================================== */
-document.addEventListener(
-    "DOMContentLoaded",
-    iniciar
-);
+document.addEventListener("DOMContentLoaded", iniciar);
 
 function iniciar() {
     cargarListaInsumos();
     cargarTablaInventario();
+    cargarHistorialEntradas();
     cargarListaSalidas();
     establecerFechaActual();
 
-    document
-        .getElementById("formIngreso")
-        .addEventListener(
-            "submit",
-            guardarIngreso
-        );
-
-    document
-        .getElementById("formSalida")
-        .addEventListener(
-            "submit",
-            registrarSalida
-        );
-
-    document
-        .getElementById("insumo")
-        .addEventListener(
-            "change",
-            completarPresentacion
-        );
+    document.getElementById("formIngreso").addEventListener("submit", guardarIngreso);
+    document.getElementById("formSalida").addEventListener("submit", registrarSalida);
+    document.getElementById("insumo").addEventListener("change", completarPresentacion);
 }
 
-/* =====================================================
-   CAMBIAR DE VISTA
-===================================================== */
 function mostrarVista(nombre) {
-    document
-        .querySelectorAll(".vista")
-        .forEach(vista => {
-            vista.classList.remove("activa");
-        });
+    document.querySelectorAll(".vista").forEach(vista => {
+        vista.classList.remove("activa");
+    });
 
     const vista = document.getElementById(nombre);
     if (vista) {
@@ -228,7 +179,8 @@ function mostrarVista(nombre) {
     }
 
     if (nombre === "inventario") {
-        cargarTablaInventario();
+        // Por defecto al entrar a inventario mostramos la tabla actual
+        mostrarInventarioActual();
     }
 
     if (nombre === "salida") {
@@ -239,19 +191,42 @@ function mostrarVista(nombre) {
         calcularConsumo();
     }
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 /* =====================================================
-   CARGAR INSUMOS EN SELECT
+   CONTROL DE VISTAS DENTRO DE INVENTARIO (ACTUAL VS HISTORIAL)
 ===================================================== */
+let viendoHistorialEntradas = false;
+
+function alternarVistaInventario() {
+    viendoHistorialEntradas = !viendoHistorialEntradas;
+    const btn = document.getElementById("btnCambiarVistaInv");
+    const titulo = document.getElementById("tituloInventario");
+    const subtitulo = document.getElementById("subtituloInventario");
+    const tablaInv = document.getElementById("contenedorTablaInventario");
+    const tablaHistorial = document.getElementById("contenedorHistorialEntradas");
+
+    if (viendoHistorialEntradas) {
+        btn.textContent = "Ver Inventario Actual";
+        titulo.textContent = "Historial de Entradas";
+        subtitulo.textContent = "Registro completo de todos los ingresos realizados al sistema.";
+        tablaInv.style.display = "none";
+        tablaHistorial.style.display = "block";
+        cargarHistorialEntradas();
+    } else {
+        btn.textContent = "Ver Historial de Entradas";
+        titulo.textContent = "Inventario Actual";
+        subtitulo.textContent = "Consulta, edita o elimina los registros existentes.";
+        tablaInv.style.display = "block";
+        tablaHistorial.style.display = "none";
+        cargarTablaInventario();
+    }
+}
+
 function cargarListaInsumos() {
     const select = document.getElementById("insumo");
     select.innerHTML = '<option value="">Seleccione un insumo</option>';
-
     insumos.forEach(insumo => {
         const option = document.createElement("option");
         option.value = insumo;
@@ -260,44 +235,34 @@ function cargarListaInsumos() {
     });
 }
 
-/* =====================================================
-   COMPLETAR PRESENTACIÓN
-===================================================== */
 function completarPresentacion() {
     const nombre = document.getElementById("insumo").value;
     const presentacion = document.getElementById("presentacion");
-
     if (presentaciones[nombre]) {
         presentacion.value = presentaciones[nombre];
     }
 }
 
-/* =====================================================
-   NUEVO INGRESO
-===================================================== */
 function nuevoIngreso() {
     limpiarFormulario();
     document.getElementById("tituloFormulario").textContent = "Registrar ingreso";
     mostrarVista("ingreso");
 }
 
-/* =====================================================
-   LIMPIAR FORMULARIO
-===================================================== */
 function limpiarFormulario() {
     document.getElementById("formIngreso").reset();
     document.getElementById("registroId").value = "";
 }
 
-/* =====================================================
-   GUARDAR INGRESO
-===================================================== */
 function guardarIngreso(event) {
     event.preventDefault();
 
     const id = document.getElementById("registroId").value;
+    const fechaHoraActual = new Date().toISOString();
+
     const registro = {
         id: id || Date.now().toString(),
+        fechaRegistro: id ? undefined : fechaHoraActual, // Mantiene la fecha original si se edita, o la crea si es nuevo
         insumo: document.getElementById("insumo").value,
         presentacion: document.getElementById("presentacion").value,
         marca: document.getElementById("marca").value,
@@ -313,6 +278,8 @@ function guardarIngreso(event) {
     const posicion = inventario.findIndex(item => item.id === registro.id);
 
     if (posicion >= 0) {
+        // Conservamos la fecha de registro original al editar
+        registro.fechaRegistro = inventario[posicion].fechaRegistro || fechaHoraActual;
         inventario[posicion] = registro;
         alert("El registro fue actualizado correctamente.");
     } else {
@@ -323,12 +290,20 @@ function guardarIngreso(event) {
     guardarInventario(inventario);
     limpiarFormulario();
     cargarTablaInventario();
+    cargarHistorialEntradas();
     mostrarVista("inventario");
 }
 
-/* =====================================================
-   CARGAR INVENTARIO
-===================================================== */
+function mostrarInventarioActual() {
+    viendoHistorialEntradas = false;
+    document.getElementById("btnCambiarVistaInv").textContent = "Ver Historial de Entradas";
+    document.getElementById("tituloInventario").textContent = "Inventario Actual";
+    document.getElementById("subtituloInventario").textContent = "Consulta, edita o elimina los registros existentes.";
+    document.getElementById("contenedorTablaInventario").style.display = "block";
+    document.getElementById("contenedorHistorialEntradas").style.display = "none";
+    cargarTablaInventario();
+}
+
 function cargarTablaInventario() {
     const cuerpo = document.getElementById("inventarioBody");
     if (!cuerpo) return;
@@ -337,13 +312,7 @@ function cargarTablaInventario() {
     cuerpo.innerHTML = "";
 
     if (inventario.length === 0) {
-        cuerpo.innerHTML = `
-            <tr>
-                <td colspan="12">
-                    No hay registros en el inventario.
-                </td>
-            </tr>
-        `;
+        cuerpo.innerHTML = `<tr><td colspan="12">No hay registros en el inventario.</td></tr>`;
         return;
     }
 
@@ -353,7 +322,6 @@ function cargarTablaInventario() {
         const existencia = Number(item.cantidad) - totalSalidas;
 
         const fila = document.createElement("tr");
-
         fila.innerHTML = `
             <td>${escapar(item.insumo)}</td>
             <td>${escapar(item.presentacion)}</td>
@@ -369,27 +337,44 @@ function cargarTablaInventario() {
                 ${existencia}
             </td>
             <td class="acciones">
-                <button
-                    class="btn editar"
-                    onclick="editarRegistro('${item.id}')"
-                >
-                    Editar
-                </button>
-                <button
-                    class="btn eliminar"
-                    onclick="eliminarRegistro('${item.id}')"
-                >
-                    Eliminar
-                </button>
+                <button class="btn editar" onclick="editarRegistro('${item.id}')">Editar</button>
+                <button class="btn eliminar" onclick="eliminarRegistro('${item.id}')">Eliminar</button>
             </td>
         `;
         cuerpo.appendChild(fila);
     });
 }
 
-/* =====================================================
-   EDITAR REGISTRO
-===================================================== */
+function cargarHistorialEntradas() {
+    const cuerpo = document.getElementById("historialEntradasBody");
+    if (!cuerpo) return;
+
+    const inventario = obtenerInventario();
+    cuerpo.innerHTML = "";
+
+    if (inventario.length === 0) {
+        cuerpo.innerHTML = `<tr><td colspan="10">No hay historial de entradas registrado.</td></tr>`;
+        return;
+    }
+
+    inventario.forEach(item => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td>${formatearFechaHora(item.fechaRegistro)}</td>
+            <td>${escapar(item.insumo)}</td>
+            <td>${escapar(item.presentacion)}</td>
+            <td>${escapar(item.marca)}</td>
+            <td>${escapar(item.serie)}</td>
+            <td>${escapar(item.registroSanitario)}</td>
+            <td>${escapar(item.clasificacionRiesgo)}</td>
+            <td>${escapar(item.lote)}</td>
+            <td>${formatearFecha(item.fechaVencimiento)}</td>
+            <td><strong>${item.cantidad}</strong></td>
+        `;
+        cuerpo.appendChild(fila);
+    });
+}
+
 function editarRegistro(id) {
     const inventario = obtenerInventario();
     const registro = inventario.find(item => item.id === id);
@@ -414,13 +399,9 @@ function editarRegistro(id) {
     mostrarVista("ingreso");
 }
 
-/* =====================================================
-   ELIMINAR REGISTRO
-===================================================== */
 function eliminarRegistro(id) {
     const inventario = obtenerInventario();
     const registro = inventario.find(item => item.id === id);
-
     if (!registro) return;
 
     const confirmar = confirm(`¿Está segura de eliminar "${registro.insumo}"?`);
@@ -433,12 +414,10 @@ function eliminarRegistro(id) {
     const nuevoInventario = inventario.filter(item => item.id !== id);
     guardarInventario(nuevoInventario);
     cargarTablaInventario();
+    cargarHistorialEntradas();
     alert("El registro fue eliminado.");
 }
 
-/* =====================================================
-   CARGAR LISTA PARA SALIDAS
-===================================================== */
 function cargarListaSalidas() {
     const select = document.getElementById("salidaInsumo");
     if (!select) return;
@@ -460,9 +439,6 @@ function cargarListaSalidas() {
     });
 }
 
-/* =====================================================
-   REGISTRAR SALIDA
-===================================================== */
 function registrarSalida(event) {
     event.preventDefault();
 
@@ -511,8 +487,41 @@ function registrarSalida(event) {
 }
 
 /* =====================================================
-   FECHA ACTUAL Y BLOQUEO DE DÍAS FUTUROS
+   DESCARGAR EXCEL (CSV) DE SALIDAS
 ===================================================== */
+function descargarExcelSalidas() {
+    const salidas = obtenerSalidas();
+    const inventario = obtenerInventario();
+
+    if (salidas.length === 0) {
+        alert("No hay salidas registradas para descargar.");
+        return;
+    }
+
+    // Cabeceras del archivo CSV (Compatible con Excel)
+    let csvContent = "\uFEFFFecha,Insumo,Presentación,Lote,Cantidad Retirada\n";
+
+    salidas.forEach(salida => {
+        const item = inventario.find(inv => inv.id === salida.inventarioId);
+        const insumoNombre = item ? `"${item.insumo.replace(/"/g, '""')}"` : '"Insumo desconocido"';
+        const presentacion = item ? `"${item.presentacion.replace(/"/g, '""')}"` : '""';
+        const lote = item ? `"${item.lote || ''}"` : '""';
+        const fechaFormateada = formatearFechaHora(salida.fecha);
+
+        csvContent += `${fechaFormateada},${insumoNombre},${presentacion},${lote},${salida.cantidad}\n`;
+    });
+
+    // Crear el archivo virtual y descargar
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Reporte_Salidas_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 function establecerFechaActual() {
     const campo = document.getElementById("fechaConsumo");
     if (!campo) return;
@@ -523,20 +532,12 @@ function establecerFechaActual() {
     const dia = String(hoy.getDate()).padStart(2, "0");
 
     const fechaFormateada = `${año}-${mes}-${dia}`;
-
-    // Establece la fecha de hoy por defecto
     campo.value = fechaFormateada;
-    
-    // Bloquea el calendario para no elegir fechas futuras
     campo.max = fechaFormateada;
 
-    // Calcula el texto del rango de la semana al cargar
     actualizarTextoSemana();
 }
 
-/* =====================================================
-   CONSUMO SEMANAL
-===================================================== */
 function calcularConsumo() {
     const cuerpo = document.getElementById("consumoBody");
     if (!cuerpo) return;
@@ -546,13 +547,7 @@ function calcularConsumo() {
     cuerpo.innerHTML = "";
 
     if (salidas.length === 0) {
-        cuerpo.innerHTML = `
-            <tr>
-                <td colspan="10">
-                    No existen salidas registradas.
-                </td>
-            </tr>
-        `;
+        cuerpo.innerHTML = `<tr><td colspan="10">No existen salidas registradas.</td></tr>`;
         return;
     }
 
@@ -573,9 +568,7 @@ function calcularConsumo() {
 
         registros.forEach(salida => {
             const semana = obtenerSemana(new Date(salida.fecha));
-            if (!semanas[semana]) {
-                semanas[semana] = 0;
-            }
+            if (!semanas[semana]) semanas[semana] = 0;
             semanas[semana] += Number(salida.cantidad);
         });
 
@@ -593,22 +586,13 @@ function calcularConsumo() {
             <td>${escapar(item.clasificacionRiesgo)}</td>
             <td>${escapar(item.lote)}</td>
             <td>${formatearFecha(item.fechaVencimiento)}</td>
-            <td>
-                <strong>${consumoTotal}</strong>
-            </td>
-            <td>
-                <strong>
-                    ${promedio.toFixed(2)}
-                </strong>
-            </td>
+            <td><strong>${consumoTotal}</strong></td>
+            <td><strong>${promedio.toFixed(2)}</strong></td>
         `;
         cuerpo.appendChild(fila);
     });
 }
 
-/* =====================================================
-   OBTENER SEMANA
-===================================================== */
 function obtenerSemana(fecha) {
     const fechaUTC = new Date(Date.UTC(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()));
     const dia = fechaUTC.getUTCDay() || 7;
@@ -618,9 +602,6 @@ function obtenerSemana(fecha) {
     return (fechaUTC.getUTCFullYear() + "-S" + String(numeroSemana).padStart(2, "0"));
 }
 
-/* =====================================================
-   FORMATEAR FECHA
-===================================================== */
 function formatearFecha(fecha) {
     if (!fecha) return "";
     const partes = fecha.split("-");
@@ -628,9 +609,18 @@ function formatearFecha(fecha) {
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
-/* =====================================================
-   ACTUALIZAR TEXTO RANGO DE SEMANA
-===================================================== */
+function formatearFechaHora(isoString) {
+    if (!isoString) return "";
+    const fecha = new Date(isoString);
+    if (isNaN(fecha)) return isoString;
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const año = fecha.getFullYear();
+    const hora = String(fecha.getHours()).padStart(2, '0');
+    const min = String(fecha.getMinutes()).padStart(2, '0');
+    return `${dia}/${mes}/${año} ${hora}:${min}`;
+}
+
 function actualizarTextoSemana() {
     const campo = document.getElementById("fechaConsumo");
     const inputFecha = campo.value;
@@ -641,22 +631,16 @@ function actualizarTextoSemana() {
         return;
     }
 
-    // VALIDACIÓN EXTRA: Si la fecha escrita es mayor a hoy, la forzamos al día actual
     if (campo.max && inputFecha > campo.max) {
         alert("No puedes consultar una semana en el futuro. Se ajustará a la fecha actual.");
         campo.value = campo.max;
-        actualizarTextoSemana(); // Recalcula con la fecha corregida
+        actualizarTextoSemana();
         return;
     }
 
-    // Dividimos la fecha para evitar desfases de zona horaria
     const partes = inputFecha.split('-');
     const fecha = new Date(partes[0], partes[1] - 1, partes[2]);
-
-    // Obtener el día de la semana (0 = Domingo, 1 = Lunes, ..., 6 = Sábado)
     let diaSemana = fecha.getDay();
-    
-    // Ajustar para que el Lunes sea el día de inicio
     let diferenciaLunes = diaSemana === 0 ? -6 : 1 - diaSemana;
 
     const lunes = new Date(fecha);
@@ -670,7 +654,6 @@ function actualizarTextoSemana() {
     const mesDomingo = domingo.toLocaleDateString('es-ES', opcionesMes);
     const año = domingo.getFullYear();
 
-    // Formatear el texto dependiendo de si la semana cruza entre dos meses
     if (mesLunes === mesDomingo) {
         textoSemana.textContent = `Semana del ${lunes.getDate()} al ${domingo.getDate()} de ${mesLunes} de ${año}`;
     } else {
@@ -678,9 +661,6 @@ function actualizarTextoSemana() {
     }
 }
 
-/* =====================================================
-   ESCAPAR TEXTO
-===================================================== */
 function escapar(texto) {
     if (texto === null || texto === undefined) return "";
     return String(texto)
