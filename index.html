@@ -44,7 +44,7 @@
                 <strong>Inventario</strong>
 
                 <small>
-                    Consultar y editar los insumos disponibles.
+                    Consultar, editar insumos y ver historial de entradas.
                 </small>
             </button>
 
@@ -93,7 +93,7 @@
 
 
     <!-- =========================
-         INVENTARIO
+         INVENTARIO (CON PESTAÑAS / BOTONES DE VISTA)
     ========================== -->
 
     <section id="inventario" class="vista">
@@ -101,21 +101,28 @@
         <div class="titulo-seccion">
 
             <div>
-                <h2>Inventario</h2>
+                <h2 id="tituloInventario">Inventario Actual</h2>
 
-                <p>
+                <p id="subtituloInventario">
                     Consulta, edita o elimina los registros existentes.
                 </p>
             </div>
 
-            <button class="btn secundario" onclick="mostrarVista('inicio')">
-                ← Volver
-            </button>
+            <div style="display: flex; gap: 10px;">
+                <!-- Botón para alternar entre Inventario Actual e Historial de Entradas -->
+                <button class="btn principal" id="btnCambiarVistaInv" onclick="alternarVistaInventario()">
+                    Ver Historial de Entradas
+                </button>
+                <button class="btn secundario" onclick="mostrarVista('inicio')">
+                    ← Volver
+                </button>
+            </div>
 
         </div>
 
 
-        <div class="tabla-contenedor">
+        <!-- TABLA 1: INVENTARIO ACTUAL -->
+        <div class="tabla-contenedor" id="contenedorTablaInventario">
 
             <table id="tablaInventario">
 
@@ -152,6 +159,46 @@
                 </thead>
 
                 <tbody id="inventarioBody"></tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- TABLA 2: HISTORIAL DE ENTRADAS (OCULTA POR DEFECTO) -->
+        <div class="tabla-contenedor" id="contenedorHistorialEntradas" style="display: none;">
+
+            <table id="tablaHistorialEntradas">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Fecha de Registro</th>
+
+                        <th>Insumo</th>
+
+                        <th>Presentación</th>
+
+                        <th>Marca</th>
+
+                        <th>Serie</th>
+
+                        <th>Registro sanitario / INVIMA</th>
+
+                        <th>Clasificación de riesgo</th>
+
+                        <th>Lote</th>
+
+                        <th>Fecha vencimiento</th>
+
+                        <th>Cantidad Ingresada</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="historialEntradasBody"></tbody>
 
             </table>
 
@@ -510,12 +557,18 @@
 
             </div>
 
-            <button
-                class="btn secundario"
-                onclick="mostrarVista('inicio')"
-            >
-                ← Volver
-            </button>
+            <div style="display: flex; gap: 10px;">
+                <!-- Botón para descargar excel de salidas -->
+                <button class="btn principal" onclick="descargarExcelSalidas()" style="background: #28a745;">
+                    📥 Descargar Excel de Salidas
+                </button>
+                <button
+                    class="btn secundario"
+                    onclick="mostrarVista('inicio')"
+                >
+                    ← Volver
+                </button>
+            </div>
 
         </div>
 
@@ -591,35 +644,16 @@
 
 </main>
 
-<!-- =====================================================
-     PIE DE PÁGINA
-===================================================== -->
-
+<!-- =========================
+     PIE DE PÁGINA (AUTORÍA Y OBRA DE ARTE)
+========================= -->
 <footer class="footer-autor">
-
     <div class="footer-contenido">
-
-        <img
-            src="gatito.jpg"
-            alt="Gatito"
-            class="gatito-img"
-        >
-
-        <h3>
-            Sistema desarrollado por
-        </h3>
-
-        <p class="autor">
-            <strong>Angie Valeria Colonia Serna</strong>
-        </p>
-
-        <p class="descripcion">
-            Sistema de control y registro de inventario de insumos
-            para laboratorio clínico.
-        </p>
-
+        <p>Sistema desarrollado por <strong>Angie Valeria Colonia Serna</strong></p>
+        <div class="gatito-container">
+            <img src="gatito.jpg" alt="Gatito tierno" class="gatito-img">
+        </div>
     </div>
-
 </footer>
 
 
