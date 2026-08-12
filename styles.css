@@ -1,1308 +1,656 @@
 /* =====================================================
-   CONTROL DE INVENTARIO
-   LocalStorage
+   CONFIGURACIÓN GENERAL
 ===================================================== */
 
-/* =====================================================
-   CLAVES DEL LOCAL STORAGE
-===================================================== */
+* {
+    box-sizing: border-box;
+}
 
-const CLAVE_INVENTARIO = "inventario_insumos";
-const CLAVE_SALIDAS = "salidas_insumos";
+body {
+    margin: 0;
 
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
-/* =====================================================
-   LISTA DE INSUMOS
-===================================================== */
+    background: #f1f4f7;
 
-const insumos = [
-    "TUBO TAPA AMARILLA(5 ml)",
-    "TUBO TAPA ROJA (4 ml)",
-    "TUBO TAPA LILA  (2 ml)",
-    "TUBO TAPA AZUL CITRATADO",
-    "TUBO TAPA GRIS (4 ml)",
-    "TUBO TAPA VERDE (4 ml)",
-    "TUBO TAPA NEGRA (4 ml)",
-    "TUBO TAPA BLANCA (4 ml)",
-    "TUBO TAPA AMARILLA (8.5 ml)",
-    "TUBO TAPA ROJA (8.5 ml)",
-    "TUBO TAPA LILA (4 ml)",
-    "TUBO TAPA AZUL CITRATADO (2.7 ml)",
-    "TUBO TAPA VERDE (8 ml)",
-    "TUBO TAPA GRIS (2 ml)",
-    "TUBO TAPA AMARILLA (3.5 ml)",
-    "TUBO TAPA ROJA (3.5 ml)",
-    "TUBO TAPA LILA (3.5 ml)",
-    "TUBO TAPA AZUL CITRATADO (3.5 ml)",
-    "TUBO TAPA VERDE (3.5 ml)",
-    "TUBO TAPA GRIS (3.5 ml)",
-    "TUBO TAPA NEGRA (3.5 ml)",
-    "TUBO TAPA BLANCA (3.5 ml)",
-    "JERINGA 3 ml",
-    "JERINGA 5 ml",
-    "JERINGA 10 ml",
-    "JERINGA 20 ml",
-    "AGUJA 21G X 1 1/2",
-    "AGUJA 22G X 1 1/2",
-    "AGUJA 23G X 1",
-    "AGUJA 25G X 1",
-    "TORUNDAS DE ALGODÓN",
-    "GASAS ESTÉRILES",
-    "GUANTES DE NITRILO S",
-    "GUANTES DE NITRILO M",
-    "GUANTES DE NITRILO L",
-    "TAPABOCAS",
-    "BATA DESECHABLE",
-    "ALCOHOL ANTISÉPTICO",
-    "CLORHEXIDINA",
-    "CURITAS",
-    "MICROPORE",
-    "ESPARADRAPO",
-    "TORNIQUETE",
-    "RECIPIENTE COPROLÓGICO",
-    "RECIPIENTE ORINA",
-    "RECIPIENTE CITOLOGÍA",
-    "ESCOBILLÓN CERVICAL",
-    "LÁMINAS PORTAOBJETOS",
-    "LÁMINAS CUBREOBJETOS",
-    "PAPEL PARAFILM",
-    "BOLSA ROJA",
-    "BOLSA VERDE",
-    "BOLSA GRIS",
-    "GUARDIAN 2.9 L",
-    "GUARDIAN 7 L",
-    "CONTENEDOR CORTOPUNZANTE",
-    "TUBO EPPENDORF",
-    "PIPETA",
-    "PUNTAS DE PIPETA",
-    "HISOPOS",
-    "HISOPO NASOFARÍNGEO",
-    "HISOPO VAGINAL",
-    "MEDIO DE TRANSPORTE",
-    "TIRAS DE ORINA",
-    "TIRAS DE GLUCOSA",
-    "PAPEL ABSORBENTE",
-    "TOALLAS DE PAPEL",
-    "JABÓN ANTIBACTERIAL",
-    "DETERGENTE",
-    "DESINFECTANTE"
-];
+    color: #1d1d1d;
+}
 
 
 /* =====================================================
-   PRESENTACIONES
+   ENCABEZADO
 ===================================================== */
 
-const presentaciones = {
+.encabezado {
+    height: 72px;
 
-    "TUBO TAPA AMARILLA(5 ml)": "GRADILLA X 100",
-    "TUBO TAPA ROJA (4 ml)": "GRADILLA X 100",
-    "TUBO TAPA LILA  (2 ml)": "GRADILLA X 100",
-    "TUBO TAPA AZUL CITRATADO": "GRADILLA X 100",
-    "TUBO TAPA GRIS (4 ml)": "GRADILLA X 100",
-    "TUBO TAPA VERDE (4 ml)": "GRADILLA X 100",
-    "TUBO TAPA NEGRA (4 ml)": "GRADILLA X 100",
-    "TUBO TAPA BLANCA (4 ml)": "GRADILLA X 100",
+    background: #18527e;
 
-    "TUBO TAPA AMARILLA (8.5 ml)": "GRADILLA X 100",
-    "TUBO TAPA ROJA (8.5 ml)": "GRADILLA X 100",
-    "TUBO TAPA LILA (4 ml)": "GRADILLA X 100",
-    "TUBO TAPA AZUL CITRATADO (2.7 ml)": "GRADILLA X 100",
+    color: white;
 
-    "TUBO TAPA VERDE (8 ml)": "GRADILLA X 100",
-    "TUBO TAPA GRIS (2 ml)": "GRADILLA X 100",
+    display: flex;
 
-    "TUBO TAPA AMARILLA (3.5 ml)": "GRADILLA X 100",
-    "TUBO TAPA ROJA (3.5 ml)": "GRADILLA X 100",
-    "TUBO TAPA LILA (3.5 ml)": "GRADILLA X 100",
-    "TUBO TAPA AZUL CITRATADO (3.5 ml)": "GRADILLA X 100",
-    "TUBO TAPA VERDE (3.5 ml)": "GRADILLA X 100",
-    "TUBO TAPA GRIS (3.5 ml)": "GRADILLA X 100",
-    "TUBO TAPA NEGRA (3.5 ml)": "GRADILLA X 100",
-    "TUBO TAPA BLANCA (3.5 ml)": "GRADILLA X 100"
-};
+    align-items: center;
+
+    padding: 0 38px;
+
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.titulo-principal {
+    font-size: 21px;
+
+    font-weight: 600;
+}
 
 
 /* =====================================================
-   OBTENER INVENTARIO
+   CONTENEDOR
 ===================================================== */
 
-function obtenerInventario() {
+.contenedor {
+    width: calc(100% - 70px);
 
-    try {
+    max-width: 1600px;
 
-        return JSON.parse(
-            localStorage.getItem(CLAVE_INVENTARIO)
-        ) || [];
+    margin: 35px auto;
+}
 
-    } catch (error) {
 
-        console.error(
-            "Error leyendo inventario:",
-            error
-        );
+/* =====================================================
+   VISTAS
+===================================================== */
 
-        return [];
+.vista {
+    display: none;
+}
+
+.vista.activa {
+    display: block;
+}
+
+
+/* =====================================================
+   TARJETAS
+===================================================== */
+
+.tarjeta {
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 32px;
+
+    margin-bottom: 35px;
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.bienvenida h1 {
+    margin-top: 0;
+
+    color: #18527e;
+
+    font-size: 30px;
+}
+
+.bienvenida p {
+    font-size: 18px;
+
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   MENÚ
+===================================================== */
+
+.menu-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 25px;
+}
+
+.menu-card {
+    background: white;
+
+    border: none;
+
+    border-radius: 14px;
+
+    padding: 32px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    min-height: 220px;
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.08);
+
+    transition:
+        transform 0.15s,
+        box-shadow 0.15s;
+}
+
+.menu-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 7px 20px rgba(0, 0, 0, 0.12);
+}
+
+.menu-card .icono {
+    display: block;
+
+    font-size: 42px;
+
+    margin-bottom: 20px;
+}
+
+.menu-card strong {
+    display: block;
+
+    font-size: 23px;
+
+    color: #18527e;
+
+    margin-bottom: 12px;
+}
+
+.menu-card small {
+    display: block;
+
+    font-size: 16px;
+
+    color: #666;
+
+    line-height: 1.4;
+}
+
+
+/* =====================================================
+   TÍTULOS DE SECCIÓN
+===================================================== */
+
+.titulo-seccion {
+    background: white;
+
+    padding: 25px 30px;
+
+    border-radius: 12px;
+
+    margin-bottom: 25px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.titulo-seccion h2 {
+    margin: 0 0 7px;
+
+    color: #18527e;
+
+    font-size: 28px;
+}
+
+.titulo-seccion p {
+    margin: 0;
+
+    color: #666;
+}
+
+
+/* =====================================================
+   BOTONES
+===================================================== */
+
+.btn {
+    border: none;
+
+    border-radius: 7px;
+
+    padding: 12px 20px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.btn.principal {
+    background: #18527e;
+
+    color: white;
+}
+
+.btn.principal:hover {
+    background: #123f61;
+}
+
+.btn.secundario {
+    background: #e7edf2;
+
+    color: #18527e;
+}
+
+.btn.secundario:hover {
+    background: #d8e1e8;
+}
+
+.btn.editar {
+    background: #f0ad4e;
+
+    color: white;
+
+    padding: 8px 12px;
+
+    margin-right: 5px;
+}
+
+.btn.eliminar {
+    background: #d9534f;
+
+    color: white;
+
+    padding: 8px 12px;
+}
+
+.btn.editar:hover {
+    background: #d99435;
+}
+
+.btn.eliminar:hover {
+    background: #c9302c;
+}
+
+
+/* =====================================================
+   FORMULARIOS
+===================================================== */
+
+form {
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.07);
+}
+
+.form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+.campo {
+    display: flex;
+
+    flex-direction: column;
+}
+
+.campo-grande {
+    grid-column: span 2;
+}
+
+.campo label {
+    font-weight: 600;
+
+    margin-bottom: 7px;
+
+    color: #333;
+}
+
+.campo input,
+.campo select {
+    width: 100%;
+
+    padding: 12px;
+
+    border:
+        1px solid #cbd3da;
+
+    border-radius: 6px;
+
+    background: white;
+
+    font-size: 15px;
+}
+
+.campo input:focus,
+.campo select:focus {
+    outline: none;
+
+    border-color: #18527e;
+
+    box-shadow:
+        0 0 0 2px rgba(24, 82, 126, 0.12);
+}
+
+.acciones-formulario {
+    margin-top: 30px;
+
+    display: flex;
+
+    gap: 12px;
+}
+
+
+/* =====================================================
+   TABLAS
+===================================================== */
+
+.tabla-contenedor {
+    width: 100%;
+
+    background: white;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.07);
+
+    overflow-x: auto;
+
+    overflow-y: visible;
+}
+
+table {
+    width: 100%;
+
+    min-width: 1450px;
+
+    border-collapse: collapse;
+
+    font-size: 14px;
+}
+
+th {
+    background: #18527e;
+
+    color: white;
+
+    text-align: left;
+
+    padding: 14px 15px;
+
+    white-space: nowrap;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 2;
+}
+
+td {
+    padding: 13px 15px;
+
+    border-bottom:
+        1px solid #e1e5e8;
+
+    vertical-align: middle;
+
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background: #f5f8fa;
+}
+
+
+/* =====================================================
+   COLUMNA ACCIONES
+===================================================== */
+
+td.acciones {
+    min-width: 170px;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   EXISTENCIA
+===================================================== */
+
+.existencia {
+    font-weight: bold;
+
+    color: #18527e;
+}
+
+.existencia.cero {
+    color: #d9534f;
+}
+
+
+/* =====================================================
+   FILTROS CONSUMO
+===================================================== */
+
+.filtros-consumo {
+    background: white;
+
+    padding: 22px;
+
+    border-radius: 12px;
+
+    margin-bottom: 25px;
+
+    display: flex;
+
+    align-items: end;
+
+    gap: 20px;
+
+    box-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.07);
+}
+
+.filtros-consumo .campo {
+    width: 280px;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer-autor {
+    margin-top: 60px;
+
+    background: #ffffff;
+
+    border-top: 5px solid #18527e;
+
+    box-shadow:
+        0 -3px 15px rgba(0, 0, 0, 0.08);
+
+    padding: 40px 20px;
+}
+
+.footer-contenido {
+    max-width: 900px;
+
+    margin: auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+}
+
+.gatito-img {
+    width: 180px;
+
+    height: auto;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.18);
+
+    transition: 0.3s;
+
+    margin-bottom: 20px;
+}
+
+.gatito-img:hover {
+    transform: scale(1.05);
+}
+
+.footer-contenido h3 {
+    margin: 0;
+
+    color: #18527e;
+
+    font-size: 21px;
+
+    font-weight: 600;
+}
+
+.footer-contenido .autor {
+    margin: 8px 0;
+
+    font-size: 19px;
+
+    color: #222;
+}
+
+.footer-contenido .descripcion {
+    margin-top: 5px;
+
+    color: #6c757d;
+
+    font-size: 15px;
+
+    max-width: 500px;
+
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1000px) {
+
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .campo-grande {
+        grid-column: span 1;
+    }
+
+    .titulo-seccion {
+        flex-direction: column;
+
+        align-items: flex-start;
     }
 }
 
 
 /* =====================================================
-   GUARDAR INVENTARIO
+   RESPONSIVE - CELULARES
 ===================================================== */
 
-function guardarInventario(inventario) {
+@media (max-width: 700px) {
 
-    localStorage.setItem(
-        CLAVE_INVENTARIO,
-        JSON.stringify(inventario)
-    );
-}
+    .contenedor {
+        width: calc(100% - 25px);
 
-
-/* =====================================================
-   OBTENER SALIDAS
-===================================================== */
-
-function obtenerSalidas() {
-
-    try {
-
-        return JSON.parse(
-            localStorage.getItem(CLAVE_SALIDAS)
-        ) || [];
-
-    } catch (error) {
-
-        console.error(
-            "Error leyendo salidas:",
-            error
-        );
-
-        return [];
-    }
-}
-
-
-/* =====================================================
-   GUARDAR SALIDAS
-===================================================== */
-
-function guardarSalidas(salidas) {
-
-    localStorage.setItem(
-        CLAVE_SALIDAS,
-        JSON.stringify(salidas)
-    );
-}
-
-
-/* =====================================================
-   CAMBIOS DE NOMBRES
-   Actualiza registros antiguos sin borrarlos
-===================================================== */
-
-const CAMBIOS_NOMBRES = {
-
-    "TUBO TAPA AMARILLA  (5 ml)":
-        "TUBO TAPA AMARILLA(5 ml)",
-
-    "TUBO TAPA AMARILLA (5 ml)":
-        "TUBO TAPA AMARILLA(5 ml)",
-
-    "TUBO TAPA AZUL CITRATADO ":
-        "TUBO TAPA AZUL CITRATADO",
-
-    "TUBO TAPA LILA IMPROVE (2 ml)":
-        "TUBO TAPA LILA  (2 ml)",
-
-    "TUBO TAPA LILA IMPROVE (2 ml) ":
-        "TUBO TAPA LILA  (2 ml)"
-};
-
-
-/* =====================================================
-   MIGRAR NOMBRES GUARDADOS
-===================================================== */
-
-function migrarNombresGuardados() {
-
-    let inventario = obtenerInventario();
-
-    let huboCambios = false;
-
-    inventario = inventario.map(item => {
-
-        const nombreAnterior = item.insumo;
-
-        const nombreNuevo =
-            CAMBIOS_NOMBRES[nombreAnterior];
-
-        if (
-            nombreNuevo &&
-            nombreNuevo !== nombreAnterior
-        ) {
-
-            huboCambios = true;
-
-            return {
-                ...item,
-                insumo: nombreNuevo
-            };
-        }
-
-        return item;
-    });
-
-
-    if (huboCambios) {
-
-        guardarInventario(inventario);
-
-        console.log(
-            "Nombres antiguos actualizados correctamente."
-        );
-    }
-}
-
-
-/* =====================================================
-   INICIAR PROGRAMA
-===================================================== */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    iniciar
-);
-
-
-function iniciar() {
-
-    migrarNombresGuardados();
-
-    cargarListaInsumos();
-
-    cargarInventario();
-
-    cargarSalidas();
-
-    establecerFechaActual();
-
-    actualizarConsumo();
-}
-
-
-/* =====================================================
-   CARGAR LISTA DE INSUMOS
-===================================================== */
-
-function cargarListaInsumos() {
-
-    const select =
-        document.getElementById("insumo");
-
-    if (!select) return;
-
-    select.innerHTML =
-        '<option value="">Seleccione un insumo</option>';
-
-    insumos.forEach(insumo => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = insumo;
-
-        option.textContent = insumo;
-
-        select.appendChild(option);
-    });
-}
-
-
-/* =====================================================
-   COMPLETAR PRESENTACIÓN
-===================================================== */
-
-function completarPresentacion() {
-
-    const nombre =
-        document.getElementById("insumo").value;
-
-    const presentacion =
-        document.getElementById("presentacion");
-
-    if (!presentacion) return;
-
-    if (presentaciones[nombre]) {
-
-        presentacion.value =
-            presentaciones[nombre];
-
-    } else {
-
-        presentacion.value = "";
-    }
-}
-
-
-/* =====================================================
-   GUARDAR INVENTARIO
-===================================================== */
-
-function registrarInventario(event) {
-
-    event.preventDefault();
-
-    const insumo =
-        document.getElementById("insumo").value;
-
-    const presentacion =
-        document.getElementById("presentacion").value;
-
-    const cantidad =
-        Number(
-            document.getElementById("cantidad").value
-        );
-
-    const marca =
-        document.getElementById("marca").value;
-
-    const serie =
-        document.getElementById("serie").value;
-
-    const registroSanitario =
-        document.getElementById("registroSanitario").value;
-
-    const clasificacionRiesgo =
-        document.getElementById("clasificacionRiesgo").value;
-
-    const lote =
-        document.getElementById("lote").value;
-
-    const fechaVencimiento =
-        document.getElementById("fechaVencimiento").value;
-
-
-    if (!insumo) {
-
-        alert("Seleccione un insumo.");
-
-        return;
+        margin: 20px auto;
     }
 
-
-    if (!cantidad || cantidad <= 0) {
-
-        alert(
-            "Ingrese una cantidad válida."
-        );
-
-        return;
+    .encabezado {
+        padding: 0 18px;
     }
 
-
-    const inventario =
-        obtenerInventario();
-
-
-    const registro = {
-
-        id: Date.now(),
-
-        insumo,
-
-        presentacion,
-
-        cantidadIngresada: cantidad,
-
-        existencia: cantidad,
-
-        marca,
-
-        serie,
-
-        registroSanitario,
-
-        clasificacionRiesgo,
-
-        lote,
-
-        fechaVencimiento,
-
-        fechaIngreso:
-            new Date().toISOString()
-    };
-
-
-    inventario.push(registro);
-
-
-    guardarInventario(inventario);
-
-
-    document
-        .getElementById("formInventario")
-        ?.reset();
-
-
-    establecerFechaActual();
-
-    cargarInventario();
-
-    alert(
-        "Inventario registrado correctamente."
-    );
-}
-
-
-/* =====================================================
-   CARGAR INVENTARIO
-===================================================== */
-
-function cargarInventario() {
-
-    const inventario =
-        obtenerInventario();
-
-    const tbody =
-        document.getElementById(
-            "tablaInventario"
-        );
-
-    if (!tbody) return;
-
-    tbody.innerHTML = "";
-
-
-    inventario.forEach(item => {
-
-        const tr =
-            document.createElement("tr");
-
-
-        const existenciaClass =
-            Number(item.existencia) === 0
-                ? "existencia cero"
-                : "existencia";
-
-
-        tr.innerHTML = `
-
-            <td>${escapeHTML(item.insumo)}</td>
-
-            <td>${escapeHTML(item.presentacion || "")}</td>
-
-            <td>${escapeHTML(item.marca || "")}</td>
-
-            <td>${escapeHTML(item.serie || "")}</td>
-
-            <td>${escapeHTML(item.registroSanitario || "")}</td>
-
-            <td>${escapeHTML(item.clasificacionRiesgo || "")}</td>
-
-            <td>${escapeHTML(item.lote || "")}</td>
-
-            <td>
-                ${formatearFecha(item.fechaVencimiento)}
-            </td>
-
-            <td>
-                ${Number(item.cantidadIngresada) || 0}
-            </td>
-
-            <td class="${existenciaClass}">
-                ${Number(item.existencia) || 0}
-            </td>
-
-            <td class="acciones">
-
-                <button
-                    class="btn editar"
-                    onclick="editarInventario(${item.id})"
-                >
-                    Editar
-                </button>
-
-                <button
-                    class="btn eliminar"
-                    onclick="eliminarInventario(${item.id})"
-                >
-                    Eliminar
-                </button>
-
-            </td>
-        `;
-
-
-        tbody.appendChild(tr);
-    });
-}
-
-
-/* =====================================================
-   EDITAR INVENTARIO
-===================================================== */
-
-function editarInventario(id) {
-
-    const inventario =
-        obtenerInventario();
-
-    const posicion =
-        inventario.findIndex(
-            item => item.id === id
-        );
-
-
-    if (posicion === -1) {
-
-        alert(
-            "No se encontró el registro."
-        );
-
-        return;
+    .form-grid {
+        grid-template-columns: 1fr;
     }
 
+    .filtros-consumo {
+        flex-direction: column;
 
-    const item =
-        inventario[posicion];
-
-
-    const nuevaCantidad =
-        prompt(
-            "Ingrese la nueva cantidad ingresada:",
-            item.cantidadIngresada
-        );
-
-
-    if (
-        nuevaCantidad === null ||
-        nuevaCantidad === ""
-    ) {
-
-        return;
+        align-items: stretch;
     }
 
-
-    const cantidad =
-        Number(nuevaCantidad);
-
-
-    if (
-        isNaN(cantidad) ||
-        cantidad < 0
-    ) {
-
-        alert(
-            "Ingrese una cantidad válida."
-        );
-
-        return;
+    .filtros-consumo .campo {
+        width: 100%;
     }
 
-
-    const diferencia =
-        cantidad -
-        Number(item.cantidadIngresada);
-
-
-    item.cantidadIngresada =
-        cantidad;
-
-
-    item.existencia =
-        Math.max(
-            0,
-            Number(item.existencia) +
-            diferencia
-        );
-
-
-    inventario[posicion] =
-        item;
-
-
-    guardarInventario(inventario);
-
-    cargarInventario();
-
-    cargarSalidas();
-
-    actualizarConsumo();
-}
-
-
-/* =====================================================
-   ELIMINAR INVENTARIO
-===================================================== */
-
-function eliminarInventario(id) {
-
-    const confirmar =
-        confirm(
-            "¿Está seguro de eliminar este registro?"
-        );
-
-
-    if (!confirmar) return;
-
-
-    const inventario =
-        obtenerInventario();
-
-
-    const nuevoInventario =
-        inventario.filter(
-            item => item.id !== id
-        );
-
-
-    guardarInventario(
-        nuevoInventario
-    );
-
-
-    cargarInventario();
-}
-
-
-/* =====================================================
-   REGISTRAR SALIDA
-===================================================== */
-
-function registrarSalida(event) {
-
-    event.preventDefault();
-
-
-    const inventario =
-        obtenerInventario();
-
-
-    const inventarioId =
-        Number(
-            document.getElementById(
-                "salidaInsumo"
-            ).value
-        );
-
-
-    const cantidad =
-        Number(
-            document.getElementById(
-                "cantidadSalida"
-            ).value
-        );
-
-
-    if (!inventarioId) {
-
-        alert(
-            "Seleccione un insumo."
-        );
-
-        return;
+    .titulo-seccion {
+        padding: 20px;
     }
 
-
-    if (
-        !cantidad ||
-        cantidad <= 0
-    ) {
-
-        alert(
-            "Ingrese una cantidad válida."
-        );
-
-        return;
+    .titulo-seccion h2 {
+        font-size: 23px;
     }
 
-
-    const posicion =
-        inventario.findIndex(
-            item =>
-                item.id === inventarioId
-        );
-
-
-    if (posicion === -1) {
-
-        alert(
-            "No se encontró el insumo."
-        );
-
-        return;
+    .tarjeta {
+        padding: 22px;
     }
 
-
-    const item =
-        inventario[posicion];
-
-
-    if (
-        cantidad >
-        Number(item.existencia)
-    ) {
-
-        alert(
-            "La cantidad retirada no puede ser mayor que la existencia disponible."
-        );
-
-        return;
+    form {
+        padding: 22px;
     }
 
-
-    item.existencia =
-        Number(item.existencia) -
-        cantidad;
-
-
-    inventario[posicion] =
-        item;
-
-
-    guardarInventario(
-        inventario
-    );
-
-
-    const salidas =
-        obtenerSalidas();
-
-
-    salidas.push({
-
-        id: Date.now(),
-
-        inventarioId,
-
-        cantidad,
-
-        fecha:
-            new Date().toISOString()
-    });
-
-
-    guardarSalidas(
-        salidas
-    );
-
-
-    document
-        .getElementById(
-            "formSalida"
-        )
-        ?.reset();
-
-
-    cargarInventario();
-
-    cargarSalidas();
-
-    actualizarConsumo();
-
-
-    alert(
-        "Salida registrada correctamente."
-    );
-}
-
-
-/* =====================================================
-   CARGAR SALIDAS
-===================================================== */
-
-function cargarSalidas() {
-
-    const salidas =
-        obtenerSalidas();
-
-    const inventario =
-        obtenerInventario();
-
-
-    const tbody =
-        document.getElementById(
-            "tablaSalidas"
-        );
-
-
-    if (!tbody) return;
-
-
-    tbody.innerHTML = "";
-
-
-    salidas.forEach(salida => {
-
-        const item =
-            inventario.find(
-                inv =>
-                    inv.id ===
-                    salida.inventarioId
-            );
-
-
-        const tr =
-            document.createElement("tr");
-
-
-        tr.innerHTML = `
-
-            <td>
-                ${formatearFechaHora(
-                    salida.fecha
-                )}
-            </td>
-
-            <td>
-                ${
-                    item
-                        ? escapeHTML(item.insumo)
-                        : "Insumo eliminado"
-                }
-            </td>
-
-            <td>
-                ${
-                    item
-                        ? escapeHTML(
-                            item.presentacion || ""
-                        )
-                        : ""
-                }
-            </td>
-
-            <td>
-                ${
-                    item
-                        ? escapeHTML(
-                            item.lote || ""
-                        )
-                        : ""
-                }
-            </td>
-
-            <td>
-                ${Number(salida.cantidad)}
-            </td>
-        `;
-
-
-        tbody.appendChild(tr);
-    });
-}
-
-
-/* =====================================================
-   DESCARGAR EXCEL REAL
-===================================================== */
-
-function descargarExcelSalidas() {
-
-    const salidas =
-        obtenerSalidas();
-
-    const inventario =
-        obtenerInventario();
-
-
-    if (salidas.length === 0) {
-
-        alert(
-            "No hay salidas registradas para descargar."
-        );
-
-        return;
+    .acciones-formulario {
+        flex-direction: column;
     }
 
-
-    const datos =
-        salidas.map(salida => {
-
-            const item =
-                inventario.find(
-                    inv =>
-                        inv.id ===
-                        salida.inventarioId
-                );
-
-
-            return {
-
-                "Fecha":
-                    formatearFechaHora(
-                        salida.fecha
-                    ),
-
-                "Insumo":
-                    item
-                        ? item.insumo
-                        : "Insumo eliminado",
-
-                "Presentación":
-                    item
-                        ? item.presentacion
-                        : "",
-
-                "Marca":
-                    item
-                        ? item.marca
-                        : "",
-
-                "Serie":
-                    item
-                        ? item.serie
-                        : "",
-
-                "Registro sanitario / INVIMA":
-                    item
-                        ? item.registroSanitario
-                        : "",
-
-                "Clasificación de riesgo":
-                    item
-                        ? item.clasificacionRiesgo
-                        : "",
-
-                "Lote":
-                    item
-                        ? item.lote
-                        : "",
-
-                "Fecha vencimiento":
-                    item
-                        ? formatearFecha(
-                            item.fechaVencimiento
-                        )
-                        : "",
-
-                "Cantidad retirada":
-                    Number(
-                        salida.cantidad
-                    )
-            };
-        });
-
-
-    /* =================================================
-       GENERAR XLSX CON SHEETJS
-    ================================================= */
-
-    if (
-        typeof XLSX !== "undefined"
-    ) {
-
-        try {
-
-            const hoja =
-                XLSX.utils.json_to_sheet(
-                    datos
-                );
-
-
-            hoja["!cols"] = [
-
-                { wch: 20 },
-                { wch: 48 },
-                { wch: 24 },
-                { wch: 22 },
-                { wch: 22 },
-                { wch: 28 },
-                { wch: 25 },
-                { wch: 20 },
-                { wch: 20 },
-                { wch: 18 }
-            ];
-
-
-            const libro =
-                XLSX.utils.book_new();
-
-
-            XLSX.utils.book_append_sheet(
-                libro,
-                hoja,
-                "Salidas"
-            );
-
-
-            const fechaArchivo =
-                new Date()
-                    .toISOString()
-                    .slice(0, 10);
-
-
-            XLSX.writeFile(
-                libro,
-                `Reporte_Salidas_${fechaArchivo}.xlsx`
-            );
-
-
-            alert(
-                "Excel descargado correctamente."
-            );
-
-
-            return;
-
-        } catch (error) {
-
-            console.error(
-                "Error generando XLSX:",
-                error
-            );
-
-
-            alert(
-                "No se pudo generar el Excel. Se descargará un CSV como respaldo."
-            );
-        }
+    .acciones-formulario .btn {
+        width: 100%;
     }
 
+    .menu-card {
+        padding: 25px;
 
-    /* =================================================
-       RESPALDO CSV
-    ================================================= */
-
-    let csvContent =
-        "\uFEFFFecha;Insumo;Presentación;Marca;Serie;Registro sanitario / INVIMA;Clasificación de riesgo;Lote;Fecha vencimiento;Cantidad retirada\n";
-
-
-    datos.forEach(fila => {
-
-        const valores = [
-
-            fila["Fecha"],
-
-            fila["Insumo"],
-
-            fila["Presentación"],
-
-            fila["Marca"],
-
-            fila["Serie"],
-
-            fila[
-                "Registro sanitario / INVIMA"
-            ],
-
-            fila[
-                "Clasificación de riesgo"
-            ],
-
-            fila["Lote"],
-
-            fila[
-                "Fecha vencimiento"
-            ],
-
-            fila[
-                "Cantidad retirada"
-            ]
-        ];
-
-
-        csvContent +=
-            valores
-                .map(valor =>
-                    `"${String(
-                        valor ?? ""
-                    ).replace(
-                        /"/g,
-                        '""'
-                    )}"`
-                )
-                .join(";") +
-            "\n";
-    });
-
-
-    const blob =
-        new Blob(
-            [csvContent],
-            {
-                type:
-                    "text/csv;charset=utf-8;"
-            }
-        );
-
-
-    const url =
-        URL.createObjectURL(blob);
-
-
-    const link =
-        document.createElement("a");
-
-
-    link.href = url;
-
-
-    link.download =
-        `Reporte_Salidas_${new Date()
-            .toISOString()
-            .slice(0, 10)}.csv`;
-
-
-    document
-        .body
-        .appendChild(link);
-
-
-    link.click();
-
-
-    document
-        .body
-        .removeChild(link);
-
-
-    URL.revokeObjectURL(url);
-}
-
-
-/* =====================================================
-   FECHA ACTUAL
-===================================================== */
-
-function establecerFechaActual() {
-
-    const campo =
-        document.getElementById(
-            "fechaIngreso"
-        );
-
-
-    if (campo) {
-
-        campo.value =
-            new Date()
-                .toISOString()
-                .slice(0, 10);
-    }
-}
-
-
-/* =====================================================
-   FORMATEAR FECHA
-===================================================== */
-
-function formatearFecha(fecha) {
-
-    if (!fecha) return "";
-
-
-    const partes =
-        fecha.split("-");
-
-
-    if (partes.length !== 3) {
-
-        return fecha;
+        min-height: 190px;
     }
 
-
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
-}
-
-
-/* =====================================================
-   FORMATEAR FECHA Y HORA
-===================================================== */
-
-function formatearFechaHora(fecha) {
-
-    if (!fecha) return "";
-
-
-    const date =
-        new Date(fecha);
-
-
-    if (isNaN(date.getTime())) {
-
-        return fecha;
+    .menu-card strong {
+        font-size: 20px;
     }
 
-
-    return date.toLocaleString(
-        "es-CO",
-        {
-            dateStyle: "short",
-            timeStyle: "short"
-        }
-    );
-}
-
-
-/* =====================================================
-   ACTUALIZAR CONSUMO
-===================================================== */
-
-function actualizarConsumo() {
-
-    const salidas =
-        obtenerSalidas();
-
-
-    const elemento =
-        document.getElementById(
-            "consumoTotal"
-        );
-
-
-    if (!elemento) return;
-
-
-    const total =
-        salidas.reduce(
-            (
-                acumulado,
-                salida
-            ) =>
-                acumulado +
-                Number(
-                    salida.cantidad
-                ),
-            0
-        );
-
-
-    elemento.textContent =
-        total;
-}
-
-
-/* =====================================================
-   ESCAPAR HTML
-   Evita insertar datos directamente como HTML
-===================================================== */
-
-function escapeHTML(valor) {
-
-    return String(
-        valor ?? ""
-    )
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    .menu-card small {
+        font-size: 14px;
+    }
 }
