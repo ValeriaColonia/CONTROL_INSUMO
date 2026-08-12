@@ -284,6 +284,171 @@ body {
 
 
 /* =====================================================
+   BOTONES DE INVENTARIO
+===================================================== */
+
+.botones-inventario {
+    display: flex;
+
+    gap: 10px;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+}
+
+
+/* =====================================================
+   BOTONES DE CONSUMO / EXCEL
+===================================================== */
+
+.botones-consumo {
+    display: flex;
+
+    gap: 10px;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+}
+
+.btn-excel {
+    background: #217346;
+}
+
+.btn-excel:hover {
+    background: #185c37;
+}
+
+
+/* =====================================================
+   ENCABEZADO DE TABLAS
+===================================================== */
+
+.encabezado-tabla {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 22px 25px;
+
+    border-bottom: 1px solid #e1e5e8;
+
+    background: white;
+}
+
+.encabezado-tabla h3 {
+    margin: 0 0 6px;
+
+    color: #18527e;
+
+    font-size: 21px;
+}
+
+.encabezado-tabla p {
+    margin: 0;
+
+    color: #666;
+
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   FILTROS PARA DESCARGA DE EXCEL
+===================================================== */
+
+.filtros-excel {
+    background: #f8fafc;
+
+    border: 1px solid #dfe5ea;
+
+    border-radius: 10px;
+
+    padding: 18px;
+
+    margin: 20px 25px;
+
+    display: flex;
+
+    align-items: end;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+}
+
+.filtros-excel .campo {
+    width: 220px;
+}
+
+.filtros-excel .acciones-excel {
+    display: flex;
+
+    gap: 10px;
+
+    align-items: center;
+}
+
+.filtros-excel-titulo {
+    width: 100%;
+
+    margin: 0 0 2px;
+
+    color: #18527e;
+
+    font-size: 16px;
+
+    font-weight: 600;
+}
+
+.filtros-excel-ayuda {
+    width: 100%;
+
+    margin: 0 0 5px;
+
+    color: #666;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   ESTADO DEL HISTORIAL
+===================================================== */
+
+.estado {
+    display: inline-block;
+
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.estado.activo {
+    background: #dff3e4;
+
+    color: #217346;
+}
+
+.estado.eliminado {
+    background: #fbe0df;
+
+    color: #c9302c;
+}
+
+
+/* =====================================================
    FORMULARIOS
 ===================================================== */
 
@@ -478,6 +643,23 @@ td.acciones {
 
 
 /* =====================================================
+   TEXTO DE RANGO DE SEMANA
+===================================================== */
+
+.texto-rango-semana {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #555;
+
+    font-weight: 600;
+
+    line-height: 1.4;
+}
+
+
+/* =====================================================
    FOOTER
 ===================================================== */
 
@@ -583,6 +765,34 @@ td.acciones {
 
         align-items: flex-start;
     }
+
+    .botones-inventario,
+    .botones-consumo {
+        width: 100%;
+    }
+
+    .botones-inventario .btn,
+    .botones-consumo .btn {
+        flex: 1;
+    }
+
+    .encabezado-tabla {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .filtros-excel .campo {
+        width: 100%;
+    }
+
+    .filtros-excel .acciones-excel {
+        width: 100%;
+    }
+
+    .filtros-excel .acciones-excel .btn {
+        flex: 1;
+    }
 }
 
 
@@ -652,5 +862,55 @@ td.acciones {
 
     .menu-card small {
         font-size: 14px;
+    }
+
+    .botones-inventario,
+    .botones-consumo {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        width: 100%;
+    }
+
+    .botones-inventario .btn,
+    .botones-consumo .btn {
+        width: 100%;
+
+        flex: none;
+    }
+
+    .encabezado-tabla {
+        padding: 18px;
+    }
+
+    .filtros-excel {
+        margin: 15px;
+
+        padding: 15px;
+
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .filtros-excel .campo {
+        width: 100%;
+    }
+
+    .filtros-excel .acciones-excel {
+        flex-direction: column;
+
+        width: 100%;
+    }
+
+    .filtros-excel .acciones-excel .btn {
+        width: 100%;
+    }
+
+    .estado {
+        font-size: 12px;
+
+        padding: 5px 9px;
     }
 }
