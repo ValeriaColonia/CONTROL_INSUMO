@@ -348,6 +348,10 @@
                                 Cantidad ingresada
                             </th>
 
+                            <th>
+                                Estado
+                            </th>
+
                         </tr>
 
                     </thead>
@@ -828,7 +832,54 @@
 
 
 
-            <!-- FILTROS -->
+            <!-- =================================================
+                 FILTROS DE DESCARGA DE EXCEL
+            ================================================== -->
+
+            <div class="filtros-excel">
+
+                <div class="campo">
+
+                    <label for="fechaExcelInicio">
+                        Fecha inicial
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fechaExcelInicio"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="fechaExcelFin">
+                        Fecha final
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fechaExcelFin"
+                    >
+
+                </div>
+
+
+                <div class="info-rango-excel">
+
+                    📅 Selecciona el rango de fechas
+                    que deseas incluir en el Excel.
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FILTROS DE CONSUMO
+            ================================================== -->
 
             <div class="filtros-consumo">
 
@@ -865,7 +916,9 @@
 
 
 
-            <!-- TABLA CONSUMO -->
+            <!-- =================================================
+                 TABLA CONSUMO
+            ================================================== -->
 
             <div class="tabla-contenedor">
 
