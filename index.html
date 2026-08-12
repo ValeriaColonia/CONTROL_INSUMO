@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,654 +12,974 @@
 
 <body>
 
-<header class="encabezado">
-    <div class="titulo-principal">
-        Registro y control de inventario
-    </div>
-</header>
+    <!-- =====================================================
+         ENCABEZADO
+    ====================================================== -->
 
-<main class="contenedor">
+    <header class="encabezado">
 
-    <!-- =========================
-         INICIO
-    ========================== -->
-
-    <section id="inicio" class="vista activa">
-
-        <div class="tarjeta bienvenida">
-
-            <h1>Bienvenidas</h1>
-
-            <p>
-                Desde este sistema podremos registrar los insumos,
-                controlar las entradas y salidas y consultar el consumo semanal.
-            </p>
-
+        <div class="titulo-principal">
+            Registro y control de inventario
         </div>
 
-        <div class="menu-grid">
+    </header>
 
-            <button class="menu-card" onclick="mostrarVista('inventario')">
-                <span class="icono">📦</span>
 
-                <strong>Inventario</strong>
+    <main class="contenedor">
 
-                <small>
-                    Consultar, editar insumos y ver historial de entradas.
-                </small>
-            </button>
 
+        <!-- =====================================================
+             INICIO
+        ====================================================== -->
 
-            <button class="menu-card" onclick="nuevoIngreso()">
+        <section id="inicio" class="vista activa">
 
-                <span class="icono">➕</span>
+            <div class="tarjeta bienvenida">
 
-                <strong>Registrar ingreso</strong>
-
-                <small>
-                    Registrar nuevos insumos en el inventario.
-                </small>
-
-            </button>
-
-
-            <button class="menu-card" onclick="mostrarVista('salida')">
-
-                <span class="icono">📤</span>
-
-                <strong>Registrar salida</strong>
-
-                <small>
-                    Registrar los insumos utilizados.
-                </small>
-
-            </button>
-
-
-            <button class="menu-card" onclick="mostrarVista('consumo')">
-
-                <span class="icono">📊</span>
-
-                <strong>Consumo semanal</strong>
-
-                <small>
-                    Consultar el promedio semanal por insumo y presentación.
-                </small>
-
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         INVENTARIO (CON PESTAÑAS / BOTONES DE VISTA)
-    ========================== -->
-
-    <section id="inventario" class="vista">
-
-        <div class="titulo-seccion">
-
-            <div>
-                <h2 id="tituloInventario">Inventario Actual</h2>
-
-                <p id="subtituloInventario">
-                    Consulta, edita o elimina los registros existentes.
-                </p>
-            </div>
-
-            <div style="display: flex; gap: 10px;">
-                <!-- Botón para alternar entre Inventario Actual e Historial de Entradas -->
-                <button class="btn principal" id="btnCambiarVistaInv" onclick="alternarVistaInventario()">
-                    Ver Historial de Entradas
-                </button>
-                <button class="btn secundario" onclick="mostrarVista('inicio')">
-                    ← Volver
-                </button>
-            </div>
-
-        </div>
-
-
-        <!-- TABLA 1: INVENTARIO ACTUAL -->
-        <div class="tabla-contenedor" id="contenedorTablaInventario">
-
-            <table id="tablaInventario">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Insumo</th>
-
-                        <th>Presentación</th>
-
-                        <th>Marca</th>
-
-                        <th>Serie</th>
-
-                        <th>Registro sanitario / INVIMA</th>
-
-                        <th>Clasificación de riesgo</th>
-
-                        <th>Lote</th>
-
-                        <th>Fecha vencimiento</th>
-
-                        <th>Cantidad ingresada</th>
-
-                        <th>Salidas</th>
-
-                        <th>Existencia</th>
-
-                        <th>Acciones</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody id="inventarioBody"></tbody>
-
-            </table>
-
-        </div>
-
-
-        <!-- TABLA 2: HISTORIAL DE ENTRADAS (OCULTA POR DEFECTO) -->
-        <div class="tabla-contenedor" id="contenedorHistorialEntradas" style="display: none;">
-
-            <table id="tablaHistorialEntradas">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Fecha de Registro</th>
-
-                        <th>Insumo</th>
-
-                        <th>Presentación</th>
-
-                        <th>Marca</th>
-
-                        <th>Serie</th>
-
-                        <th>Registro sanitario / INVIMA</th>
-
-                        <th>Clasificación de riesgo</th>
-
-                        <th>Lote</th>
-
-                        <th>Fecha vencimiento</th>
-
-                        <th>Cantidad Ingresada</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody id="historialEntradasBody"></tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         REGISTRAR INGRESO
-    ========================== -->
-
-    <section id="ingreso" class="vista">
-
-        <div class="titulo-seccion">
-
-            <div>
-
-                <h2 id="tituloFormulario">
-                    Registrar ingreso
-                </h2>
+                <h1>Bienvenidas</h1>
 
                 <p>
-                    Registra todos los datos del insumo.
+                    Desde este sistema podremos registrar los insumos,
+                    controlar las entradas y salidas y consultar el
+                    consumo semanal.
                 </p>
 
             </div>
 
-            <button class="btn secundario" onclick="mostrarVista('inicio')">
-                ← Volver
-            </button>
 
-        </div>
+            <div class="menu-grid">
 
 
-        <form id="formIngreso">
+                <!-- INVENTARIO -->
 
-            <input type="hidden" id="registroId">
+                <button
+                    class="menu-card"
+                    onclick="mostrarVista('inventario')"
+                >
+
+                    <span class="icono">📦</span>
+
+                    <strong>Inventario</strong>
+
+                    <small>
+                        Consultar existencias, editar registros
+                        y consultar el historial de entradas.
+                    </small>
+
+                </button>
 
 
-            <div class="form-grid">
+                <!-- REGISTRAR ENTRADA -->
+
+                <button
+                    class="menu-card"
+                    onclick="nuevoIngreso()"
+                >
+
+                    <span class="icono">➕</span>
+
+                    <strong>Registrar entrada</strong>
+
+                    <small>
+                        Registrar nuevos insumos que ingresan
+                        al inventario.
+                    </small>
+
+                </button>
 
 
-                <!-- INSUMO -->
+                <!-- REGISTRAR SALIDA -->
 
-                <div class="campo campo-grande">
+                <button
+                    class="menu-card"
+                    onclick="mostrarVista('salida')"
+                >
 
-                    <label for="insumo">
-                        Insumo *
-                    </label>
+                    <span class="icono">📤</span>
 
-                    <select id="insumo" required>
+                    <strong>Registrar salida</strong>
 
-                        <option value="">
-                            Seleccione un insumo
-                        </option>
+                    <small>
+                        Registrar los insumos utilizados
+                        y descontarlos de la existencia.
+                    </small>
 
-                    </select>
+                </button>
+
+
+                <!-- CONSUMO -->
+
+                <button
+                    class="menu-card"
+                    onclick="mostrarVista('consumo')"
+                >
+
+                    <span class="icono">📊</span>
+
+                    <strong>Consumo semanal</strong>
+
+                    <small>
+                        Consultar el consumo y promedio semanal
+                        por insumo y presentación.
+                    </small>
+
+                </button>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             INVENTARIO
+        ====================================================== -->
+
+        <section id="inventario" class="vista">
+
+
+            <!-- TÍTULO -->
+
+            <div class="titulo-seccion">
+
+                <div>
+
+                    <h2 id="tituloInventario">
+                        Inventario Actual
+                    </h2>
+
+                    <p id="subtituloInventario">
+                        Consulta las existencias actuales
+                        y administra los registros.
+                    </p>
 
                 </div>
 
 
-                <!-- PRESENTACIÓN -->
+                <div class="botones-inventario">
 
-                <div class="campo">
 
-                    <label for="presentacion">
-                        Presentación *
-                    </label>
+                    <!-- NUEVA ENTRADA -->
 
-                    <input
-                        type="text"
-                        id="presentacion"
-                        required
+                    <button
+                        class="btn principal"
+                        onclick="nuevoIngreso()"
                     >
+                        ➕ Registrar nueva entrada
+                    </button>
 
-                </div>
 
+                    <!-- CAMBIAR VISTA -->
 
-                <!-- MARCA -->
-
-                <div class="campo">
-
-                    <label for="marca">
-                        Marca
-                    </label>
-
-                    <input
-                        type="text"
-                        id="marca"
+                    <button
+                        class="btn principal"
+                        id="btnCambiarVistaInv"
+                        onclick="alternarVistaInventario()"
                     >
+                        📋 Ver historial de entradas
+                    </button>
 
-                </div>
 
+                    <!-- VOLVER -->
 
-                <!-- SERIE -->
-
-                <div class="campo">
-
-                    <label for="serie">
-                        Serie
-                    </label>
-
-                    <input
-                        type="text"
-                        id="serie"
+                    <button
+                        class="btn secundario"
+                        onclick="mostrarVista('inicio')"
                     >
+                        ← Volver
+                    </button>
 
                 </div>
 
+            </div>
 
-                <!-- INVIMA -->
 
-                <div class="campo">
 
-                    <label for="registroSanitario">
-                        Registro sanitario / INVIMA
-                    </label>
+            <!-- =================================================
+                 INVENTARIO ACTUAL
+            ================================================== -->
 
-                    <input
-                        type="text"
-                        id="registroSanitario"
+            <div
+                class="tabla-contenedor"
+                id="contenedorTablaInventario"
+            >
+
+                <table id="tablaInventario">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Insumo</th>
+
+                            <th>Presentación</th>
+
+                            <th>Marca</th>
+
+                            <th>Serie</th>
+
+                            <th>
+                                Registro sanitario / INVIMA
+                            </th>
+
+                            <th>
+                                Clasificación de riesgo
+                            </th>
+
+                            <th>Lote</th>
+
+                            <th>
+                                Fecha vencimiento
+                            </th>
+
+                            <th>
+                                Cantidad ingresada
+                            </th>
+
+                            <th>
+                                Salidas
+                            </th>
+
+                            <th>
+                                Existencia
+                            </th>
+
+                            <th>
+                                Fecha de entrada
+                            </th>
+
+                            <th>
+                                Acciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="inventarioBody"></tbody>
+
+                </table>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 HISTORIAL DE ENTRADAS
+            ================================================== -->
+
+            <div
+                class="tabla-contenedor"
+                id="contenedorHistorialEntradas"
+                style="display: none;"
+            >
+
+                <div class="encabezado-tabla">
+
+                    <div>
+
+                        <h3>
+                            Historial de entradas
+                        </h3>
+
+                        <p>
+                            Registro histórico de todos los insumos
+                            que han ingresado al inventario.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="btn principal"
+                        onclick="descargarExcelEntradas()"
                     >
+                        📥 Descargar Excel de entradas
+                    </button>
 
                 </div>
 
 
-                <!-- RIESGO -->
+                <table id="tablaHistorialEntradas">
 
-                <div class="campo">
+                    <thead>
 
-                    <label for="clasificacionRiesgo">
-                        Clasificación de riesgo
-                    </label>
+                        <tr>
 
-                    <select id="clasificacionRiesgo">
+                            <th>
+                                Fecha de entrada
+                            </th>
 
-                        <option value="">
-                            Seleccione
-                        </option>
+                            <th>
+                                Insumo
+                            </th>
 
-                        <option value="I">
-                            Clase I
-                        </option>
+                            <th>
+                                Presentación
+                            </th>
 
-                        <option value="IIa">
-                            Clase IIa
-                        </option>
+                            <th>
+                                Marca
+                            </th>
 
-                        <option value="IIb">
-                            Clase IIb
-                        </option>
+                            <th>
+                                Serie
+                            </th>
 
-                        <option value="III">
-                            Clase III
-                        </option>
+                            <th>
+                                Registro sanitario / INVIMA
+                            </th>
 
-                        <option value="No aplica">
-                            No aplica
-                        </option>
+                            <th>
+                                Clasificación de riesgo
+                            </th>
 
-                    </select>
+                            <th>
+                                Lote
+                            </th>
+
+                            <th>
+                                Fecha vencimiento
+                            </th>
+
+                            <th>
+                                Cantidad ingresada
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="historialEntradasBody"></tbody>
+
+                </table>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             REGISTRAR ENTRADA
+        ====================================================== -->
+
+        <section id="ingreso" class="vista">
+
+
+            <div class="titulo-seccion">
+
+                <div>
+
+                    <h2 id="tituloFormulario">
+                        Registrar entrada
+                    </h2>
+
+                    <p>
+                        Registra todos los datos del insumo
+                        que ingresa al inventario.
+                    </p>
 
                 </div>
 
 
-                <!-- LOTE -->
+                <button
+                    class="btn secundario"
+                    onclick="mostrarVista('inicio')"
+                >
+                    ← Volver
+                </button>
 
-                <div class="campo">
+            </div>
 
-                    <label for="lote">
-                        Lote
-                    </label>
 
-                    <input
-                        type="text"
-                        id="lote"
+
+            <form id="formIngreso">
+
+
+                <!-- ID PARA EDICIÓN -->
+
+                <input
+                    type="hidden"
+                    id="registroId"
+                >
+
+
+                <div class="form-grid">
+
+
+                    <!-- INSUMO -->
+
+                    <div class="campo campo-grande">
+
+                        <label for="insumo">
+                            Insumo *
+                        </label>
+
+                        <select
+                            id="insumo"
+                            required
+                            onchange="completarPresentacion()"
+                        >
+
+                            <option value="">
+                                Seleccione un insumo
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- PRESENTACIÓN -->
+
+                    <div class="campo">
+
+                        <label for="presentacion">
+                            Presentación *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="presentacion"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- MARCA -->
+
+                    <div class="campo">
+
+                        <label for="marca">
+                            Marca
+                        </label>
+
+                        <input
+                            type="text"
+                            id="marca"
+                        >
+
+                    </div>
+
+
+
+                    <!-- SERIE -->
+
+                    <div class="campo">
+
+                        <label for="serie">
+                            Serie
+                        </label>
+
+                        <input
+                            type="text"
+                            id="serie"
+                        >
+
+                    </div>
+
+
+
+                    <!-- INVIMA -->
+
+                    <div class="campo">
+
+                        <label for="registroSanitario">
+                            Registro sanitario / INVIMA
+                        </label>
+
+                        <input
+                            type="text"
+                            id="registroSanitario"
+                        >
+
+                    </div>
+
+
+
+                    <!-- RIESGO -->
+
+                    <div class="campo">
+
+                        <label for="clasificacionRiesgo">
+                            Clasificación de riesgo
+                        </label>
+
+                        <select
+                            id="clasificacionRiesgo"
+                        >
+
+                            <option value="">
+                                Seleccione
+                            </option>
+
+                            <option value="I">
+                                Clase I
+                            </option>
+
+                            <option value="IIa">
+                                Clase IIa
+                            </option>
+
+                            <option value="IIb">
+                                Clase IIb
+                            </option>
+
+                            <option value="III">
+                                Clase III
+                            </option>
+
+                            <option value="No aplica">
+                                No aplica
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- LOTE -->
+
+                    <div class="campo">
+
+                        <label for="lote">
+                            Lote
+                        </label>
+
+                        <input
+                            type="text"
+                            id="lote"
+                        >
+
+                    </div>
+
+
+
+                    <!-- FECHA VENCIMIENTO -->
+
+                    <div class="campo">
+
+                        <label for="fechaVencimiento">
+                            Fecha de vencimiento
+                        </label>
+
+                        <input
+                            type="date"
+                            id="fechaVencimiento"
+                        >
+
+                    </div>
+
+
+
+                    <!-- CANTIDAD -->
+
+                    <div class="campo">
+
+                        <label for="cantidad">
+                            Cantidad ingresada *
+                        </label>
+
+                        <input
+                            type="number"
+                            id="cantidad"
+                            min="1"
+                            step="1"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- FECHA ENTRADA -->
+
+                    <div class="campo">
+
+                        <label for="fechaIngreso">
+                            Fecha de entrada
+                        </label>
+
+                        <input
+                            type="date"
+                            id="fechaIngreso"
+                            readonly
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- BOTONES -->
+
+                <div class="acciones-formulario">
+
+
+                    <button
+                        type="submit"
+                        class="btn principal"
                     >
+                        💾 Guardar entrada
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn secundario"
+                        onclick="mostrarVista('inicio')"
+                    >
+                        Cancelar
+                    </button>
 
                 </div>
 
 
-                <!-- VENCIMIENTO -->
+            </form>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             REGISTRAR SALIDA
+        ====================================================== -->
+
+        <section id="salida" class="vista">
+
+
+            <div class="titulo-seccion">
+
+                <div>
+
+                    <h2>
+                        Registrar salida
+                    </h2>
+
+                    <p>
+                        Registra los insumos utilizados.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="btn secundario"
+                    onclick="mostrarVista('inicio')"
+                >
+                    ← Volver
+                </button>
+
+            </div>
+
+
+
+            <form id="formSalida">
+
+
+                <div class="form-grid">
+
+
+                    <!-- INSUMO -->
+
+                    <div class="campo campo-grande">
+
+                        <label for="salidaInsumo">
+                            Insumo *
+                        </label>
+
+                        <select
+                            id="salidaInsumo"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione un insumo
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- CANTIDAD -->
+
+                    <div class="campo">
+
+                        <label for="salidaCantidad">
+                            Cantidad *
+                        </label>
+
+                        <input
+                            type="number"
+                            id="salidaCantidad"
+                            min="1"
+                            step="1"
+                            required
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="acciones-formulario">
+
+
+                    <button
+                        type="submit"
+                        class="btn principal"
+                    >
+                        📤 Registrar salida
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn secundario"
+                        onclick="mostrarVista('inicio')"
+                    >
+                        Cancelar
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             CONSUMO SEMANAL
+        ====================================================== -->
+
+        <section id="consumo" class="vista">
+
+
+            <div class="titulo-seccion">
+
+                <div>
+
+                    <h2>
+                        Consumo semanal
+                    </h2>
+
+                    <p>
+                        Consulta el consumo y promedio semanal
+                        por insumo y presentación.
+                    </p>
+
+                </div>
+
+
+                <div class="botones-consumo">
+
+
+                    <!-- EXCEL SALIDAS -->
+
+                    <button
+                        class="btn principal btn-excel"
+                        onclick="descargarExcelSalidas()"
+                    >
+                        📥 Descargar Excel de salidas
+                    </button>
+
+
+                    <!-- EXCEL ENTRADAS -->
+
+                    <button
+                        class="btn principal btn-excel"
+                        onclick="descargarExcelEntradas()"
+                    >
+                        📥 Descargar Excel de entradas
+                    </button>
+
+
+                    <!-- VOLVER -->
+
+                    <button
+                        class="btn secundario"
+                        onclick="mostrarVista('inicio')"
+                    >
+                        ← Volver
+                    </button>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FILTROS -->
+
+            <div class="filtros-consumo">
+
 
                 <div class="campo">
 
-                    <label for="fechaVencimiento">
-                        Fecha de vencimiento
+                    <label for="fechaConsumo">
+                        Semana de referencia
                     </label>
 
                     <input
                         type="date"
-                        id="fechaVencimiento"
+                        id="fechaConsumo"
+                        onchange="actualizarTextoSemana()"
                     >
+
+                    <small
+                        id="textoRangoSemana"
+                        class="texto-rango-semana"
+                    ></small>
 
                 </div>
 
-
-                <!-- CANTIDAD -->
-
-                <div class="campo">
-
-                    <label for="cantidad">
-                        Cantidad ingresada *
-                    </label>
-
-                    <input
-                        type="number"
-                        id="cantidad"
-                        min="0"
-                        step="1"
-                        required
-                    >
-
-                </div>
-
-            </div>
-
-
-            <div class="acciones-formulario">
 
                 <button
-                    type="submit"
                     class="btn principal"
+                    onclick="calcularConsumo()"
                 >
-                    Guardar ingreso
+                    📊 Calcular consumo
                 </button>
 
-
-                <button
-                    type="button"
-                    class="btn secundario"
-                    onclick="mostrarVista('inicio')"
-                >
-                    Cancelar
-                </button>
-
-            </div>
-
-        </form>
-
-    </section>
-
-
-    <!-- =========================
-         REGISTRAR SALIDA
-    ========================== -->
-
-    <section id="salida" class="vista">
-
-        <div class="titulo-seccion">
-
-            <div>
-
-                <h2>Registrar salida</h2>
-
-                <p>
-                    Registra los insumos utilizados.
-                </p>
-
-            </div>
-
-            <button
-                class="btn secundario"
-                onclick="mostrarVista('inicio')"
-            >
-                ← Volver
-            </button>
-
-        </div>
-
-
-        <form id="formSalida">
-
-            <div class="form-grid">
-
-
-                <div class="campo campo-grande">
-
-                    <label for="salidaInsumo">
-                        Insumo *
-                    </label>
-
-                    <select
-                        id="salidaInsumo"
-                        required
-                    >
-
-                        <option value="">
-                            Seleccione un insumo
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="salidaCantidad">
-                        Cantidad *
-                    </label>
-
-                    <input
-                        type="number"
-                        id="salidaCantidad"
-                        min="1"
-                        step="1"
-                        required
-                    >
-
-                </div>
 
             </div>
 
 
-            <div class="acciones-formulario">
 
-                <button
-                    type="submit"
-                    class="btn principal"
-                >
-                    Registrar salida
-                </button>
+            <!-- TABLA CONSUMO -->
 
-                <button
-                    type="button"
-                    class="btn secundario"
-                    onclick="mostrarVista('inicio')"
-                >
-                    Cancelar
-                </button>
+            <div class="tabla-contenedor">
+
+                <table id="tablaConsumo">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Insumo
+                            </th>
+
+                            <th>
+                                Presentación
+                            </th>
+
+                            <th>
+                                Marca
+                            </th>
+
+                            <th>
+                                Serie
+                            </th>
+
+                            <th>
+                                Registro sanitario / INVIMA
+                            </th>
+
+                            <th>
+                                Clasificación de riesgo
+                            </th>
+
+                            <th>
+                                Lote
+                            </th>
+
+                            <th>
+                                Fecha vencimiento
+                            </th>
+
+                            <th>
+                                Consumo semanal
+                            </th>
+
+                            <th>
+                                Promedio semanal
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="consumoBody"></tbody>
+
+                </table>
 
             </div>
 
-        </form>
 
-    </section>
+        </section>
 
 
-    <!-- =========================
-         CONSUMO SEMANAL
-    ========================== -->
+    </main>
 
-    <section id="consumo" class="vista">
 
-        <div class="titulo-seccion">
 
-            <div>
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
 
-                <h2>Consumo semanal</h2>
+    <footer class="footer-autor">
 
-                <p>
-                    Consulta el consumo y promedio semanal por insumo y presentación.
-                </p>
+        <div class="footer-contenido">
 
-            </div>
+            <p>
+                Sistema desarrollado por
+                <strong>
+                    Angie Valeria Colonia Serna
+                </strong>
+            </p>
 
-            <div style="display: flex; gap: 10px;">
-                <!-- Botón para descargar excel de salidas -->
-                <button class="btn principal" onclick="descargarExcelSalidas()" style="background: #28a745;">
-                    📥 Descargar Excel de Salidas
-                </button>
-                <button
-                    class="btn secundario"
-                    onclick="mostrarVista('inicio')"
+
+            <div class="gatito-container">
+
+                <img
+                    src="gatito.jpg"
+                    alt="Gatito tierno"
+                    class="gatito-img"
                 >
-                    ← Volver
-                </button>
+
             </div>
 
         </div>
 
-
-        <div class="filtros-consumo">
-
-            <div class="campo">
-
-                <label for="fechaConsumo">
-                    Semana de referencia
-                </label>
-
-                <input
-                    type="date"
-                    id="fechaConsumo"
-                    onchange="actualizarTextoSemana()"
-                >
-                
-                <small id="textoRangoSemana" style="display: block; margin-top: 5px; color: #555; font-weight: 600;"></small>
-
-            </div>
+    </footer>
 
 
-            <button
-                class="btn principal"
-                onclick="calcularConsumo()"
-            >
-                Calcular consumo
-            </button>
 
-        </div>
+    <!-- =====================================================
+         SHEETJS
+    ====================================================== -->
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
 
-        <div class="tabla-contenedor">
+    <!-- =====================================================
+         JAVASCRIPT DEL SISTEMA
+    ====================================================== -->
 
-            <table id="tablaConsumo">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Insumo</th>
-
-                        <th>Presentación</th>
-
-                        <th>Marca</th>
-
-                        <th>Serie</th>
-
-                        <th>Registro sanitario / INVIMA</th>
-
-                        <th>Clasificación de riesgo</th>
-
-                        <th>Lote</th>
-
-                        <th>Fecha vencimiento</th>
-
-                        <th>Consumo semanal</th>
-
-                        <th>Promedio semanal</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody id="consumoBody"></tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-</main>
-
-<!-- =========================
-     PIE DE PÁGINA (AUTORÍA Y OBRA DE ARTE)
-========================= -->
-<footer class="footer-autor">
-    <div class="footer-contenido">
-        <p>Sistema desarrollado por <strong>Angie Valeria Colonia Serna</strong></p>
-        <div class="gatito-container">
-            <img src="gatito.jpg" alt="Gatito tierno" class="gatito-img">
-        </div>
-    </div>
-</footer>
-
-
-<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
     <script src="script.js"></script>
 
+
 </body>
+
 </html>
