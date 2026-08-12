@@ -8,7 +8,6 @@ const CLAVE_SALIDAS = "salidas_insumos";
 
 /* =====================================================
    LISTA DE INSUMOS
-   NO MODIFICAR
 ===================================================== */
 
 const insumos = [
@@ -79,7 +78,6 @@ const insumos = [
 
 /* =====================================================
    PRESENTACIONES
-   NO MODIFICAR
 ===================================================== */
 
 const presentaciones = {
@@ -149,71 +147,7 @@ const presentaciones = {
 };
 
 /* =====================================================
-   LOCAL STORAGE
-===================================================== */
-
-function obtenerInventario() {
-    try {
-        const datos = localStorage.getItem(CLAVE_INVENTARIO);
-
-        return datos ? JSON.parse(datos) : [];
-
-    } catch (error) {
-        console.error("Error al leer el inventario:", error);
-        return [];
-    }
-}
-
-function guardarInventario(inventario) {
-    try {
-        localStorage.setItem(
-            CLAVE_INVENTARIO,
-            JSON.stringify(inventario)
-        );
-
-        return true;
-
-    } catch (error) {
-        console.error("Error al guardar el inventario:", error);
-
-        alert("No fue posible guardar el inventario.");
-
-        return false;
-    }
-}
-
-function obtenerSalidas() {
-    try {
-        const datos = localStorage.getItem(CLAVE_SALIDAS);
-
-        return datos ? JSON.parse(datos) : [];
-
-    } catch (error) {
-        console.error("Error al leer las salidas:", error);
-        return [];
-    }
-}
-
-function guardarSalidas(salidas) {
-    try {
-        localStorage.setItem(
-            CLAVE_SALIDAS,
-            JSON.stringify(salidas)
-        );
-
-        return true;
-
-    } catch (error) {
-        console.error("Error al guardar las salidas:", error);
-
-        alert("No fue posible guardar las salidas.");
-
-        return false;
-    }
-}
-
-/* =====================================================
-   INICIO
+   INICIALIZACIÓN
 ===================================================== */
 
 document.addEventListener("DOMContentLoaded", iniciar);
@@ -224,11 +158,12 @@ function iniciar() {
     cargarTablaInventario();
     cargarHistorialEntradas();
     cargarListaSalidas();
+
     establecerFechaActual();
+    establecerLimitesFechasExcel();
 
     const formIngreso = document.getElementById("formIngreso");
     const formSalida = document.getElementById("formSalida");
-    const selectInsumo = document.getElementById("insumo");
 
     if (formIngreso) {
         formIngreso.addEventListener("submit", guardarIngreso);
@@ -238,8 +173,121 @@ function iniciar() {
         formSalida.addEventListener("submit", registrarSalida);
     }
 
-    if (selectInsumo) {
-        selectInsumo.addEventListener("change", completarPresentacion);
+    const fechaInicio = document.getElementById("fechaExcelInicio");
+    const fechaFin = document.getElementById("fechaExcelFin");
+
+    if (fechaInicio) {
+        fechaInicio.addEventListener(
+            "change",
+            validarRangoExcel
+        );
+    }
+
+    if (fechaFin) {
+        fechaFin.addEventListener(
+            "change",
+            validarRangoExcel
+        );
+    }
+}
+
+/* =====================================================
+   LOCAL STORAGE
+===================================================== */
+
+function obtenerInventario() {
+
+    try {
+
+        const datos =
+            localStorage.getItem(CLAVE_INVENTARIO);
+
+        return datos
+            ? JSON.parse(datos)
+            : [];
+
+    } catch (error) {
+
+        console.error(
+            "Error al leer el inventario:",
+            error
+        );
+
+        return [];
+    }
+}
+
+function guardarInventario(inventario) {
+
+    try {
+
+        localStorage.setItem(
+            CLAVE_INVENTARIO,
+            JSON.stringify(inventario)
+        );
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Error al guardar el inventario:",
+            error
+        );
+
+        alert(
+            "No fue posible guardar el inventario."
+        );
+
+        return false;
+    }
+}
+
+function obtenerSalidas() {
+
+    try {
+
+        const datos =
+            localStorage.getItem(CLAVE_SALIDAS);
+
+        return datos
+            ? JSON.parse(datos)
+            : [];
+
+    } catch (error) {
+
+        console.error(
+            "Error al leer las salidas:",
+            error
+        );
+
+        return [];
+    }
+}
+
+function guardarSalidas(salidas) {
+
+    try {
+
+        localStorage.setItem(
+            CLAVE_SALIDAS,
+            JSON.stringify(salidas)
+        );
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Error al guardar las salidas:",
+            error
+        );
+
+        alert(
+            "No fue posible guardar las salidas."
+        );
+
+        return false;
     }
 }
 
@@ -249,11 +297,14 @@ function iniciar() {
 
 function mostrarVista(nombre) {
 
-    document.querySelectorAll(".vista").forEach(vista => {
-        vista.classList.remove("activa");
-    });
+    document
+        .querySelectorAll(".vista")
+        .forEach(vista => {
+            vista.classList.remove("activa");
+        });
 
-    const vista = document.getElementById(nombre);
+    const vista =
+        document.getElementById(nombre);
 
     if (vista) {
         vista.classList.add("activa");
@@ -268,6 +319,9 @@ function mostrarVista(nombre) {
     }
 
     if (nombre === "consumo") {
+
+        establecerLimitesFechasExcel();
+        establecerFechaActual();
         calcularConsumo();
     }
 
@@ -278,58 +332,13 @@ function mostrarVista(nombre) {
 }
 
 /* =====================================================
-   INVENTARIO: ACTUAL / HISTORIAL
-===================================================== */
-
-let viendoHistorialEntradas = false;
-
-function alternarVistaInventario() {
-
-    viendoHistorialEntradas = !viendoHistorialEntradas;
-
-    const btn = document.getElementById("btnCambiarVistaInv");
-    const titulo = document.getElementById("tituloInventario");
-    const subtitulo = document.getElementById("subtituloInventario");
-    const tablaInv = document.getElementById("contenedorTablaInventario");
-    const tablaHistorial = document.getElementById("contenedorHistorialEntradas");
-
-    if (viendoHistorialEntradas) {
-
-        btn.textContent = "Ver Inventario Actual";
-
-        titulo.textContent = "Historial de Entradas";
-
-        subtitulo.textContent =
-            "Registro completo de todos los ingresos realizados al sistema.";
-
-        tablaInv.style.display = "none";
-        tablaHistorial.style.display = "block";
-
-        cargarHistorialEntradas();
-
-    } else {
-
-        btn.textContent = "Ver Historial de Entradas";
-
-        titulo.textContent = "Inventario Actual";
-
-        subtitulo.textContent =
-            "Consulta, edita o elimina los registros existentes.";
-
-        tablaInv.style.display = "block";
-        tablaHistorial.style.display = "none";
-
-        cargarTablaInventario();
-    }
-}
-
-/* =====================================================
    LISTA DE INSUMOS
 ===================================================== */
 
 function cargarListaInsumos() {
 
-    const select = document.getElementById("insumo");
+    const select =
+        document.getElementById("insumo");
 
     if (!select) return;
 
@@ -338,7 +347,8 @@ function cargarListaInsumos() {
 
     insumos.forEach(insumo => {
 
-        const option = document.createElement("option");
+        const option =
+            document.createElement("option");
 
         option.value = insumo;
         option.textContent = insumo;
@@ -349,11 +359,23 @@ function cargarListaInsumos() {
 
 function completarPresentacion() {
 
-    const nombre = document.getElementById("insumo").value;
-    const presentacion = document.getElementById("presentacion");
+    const selectInsumo =
+        document.getElementById("insumo");
+
+    const campoPresentacion =
+        document.getElementById("presentacion");
+
+    if (!selectInsumo || !campoPresentacion) {
+        return;
+    }
+
+    const nombre =
+        selectInsumo.value;
 
     if (presentaciones[nombre]) {
-        presentacion.value = presentaciones[nombre];
+
+        campoPresentacion.value =
+            presentaciones[nombre];
     }
 }
 
@@ -365,25 +387,58 @@ function nuevoIngreso() {
 
     limpiarFormulario();
 
-    document.getElementById("tituloFormulario").textContent =
-        "Registrar ingreso";
+    const titulo =
+        document.getElementById(
+            "tituloFormulario"
+        );
+
+    if (titulo) {
+        titulo.textContent =
+            "Registrar ingreso";
+    }
+
+    establecerFechaIngreso();
 
     mostrarVista("ingreso");
 }
 
 function limpiarFormulario() {
 
-    const formulario = document.getElementById("formIngreso");
+    const formulario =
+        document.getElementById(
+            "formIngreso"
+        );
 
     if (formulario) {
         formulario.reset();
     }
 
-    const registroId = document.getElementById("registroId");
+    const registroId =
+        document.getElementById(
+            "registroId"
+        );
 
     if (registroId) {
         registroId.value = "";
     }
+
+    establecerFechaIngreso();
+}
+
+function establecerFechaIngreso() {
+
+    const campo =
+        document.getElementById(
+            "fechaIngreso"
+        );
+
+    if (!campo) return;
+
+    campo.value =
+        obtenerFechaLocal();
+
+    campo.max =
+        obtenerFechaLocal();
 }
 
 /* =====================================================
@@ -394,19 +449,27 @@ function guardarIngreso(event) {
 
     event.preventDefault();
 
-    const id = document.getElementById("registroId").value;
+    const id =
+        document.getElementById(
+            "registroId"
+        ).value;
 
-    const fechaHoraActual = new Date().toISOString();
+    const inventario =
+        obtenerInventario();
 
-    const inventario = obtenerInventario();
+    const registroAnterior =
+        inventario.find(
+            item => item.id === id
+        );
 
-    const registroAnterior = inventario.find(
-        item => item.id === id
-    );
+    const fechaHoraActual =
+        new Date().toISOString();
 
     const registro = {
 
-        id: id || Date.now().toString(),
+        id:
+            id ||
+            Date.now().toString(),
 
         fechaRegistro:
             registroAnterior
@@ -414,66 +477,96 @@ function guardarIngreso(event) {
                 : fechaHoraActual,
 
         insumo:
-            document.getElementById("insumo").value,
+            document.getElementById(
+                "insumo"
+            ).value,
 
         presentacion:
-            document.getElementById("presentacion").value,
+            document.getElementById(
+                "presentacion"
+            ).value,
 
         marca:
-            document.getElementById("marca").value,
+            document.getElementById(
+                "marca"
+            ).value,
 
         serie:
-            document.getElementById("serie").value,
+            document.getElementById(
+                "serie"
+            ).value,
 
         registroSanitario:
-            document.getElementById("registroSanitario").value,
+            document.getElementById(
+                "registroSanitario"
+            ).value,
 
         clasificacionRiesgo:
-            document.getElementById("clasificacionRiesgo").value,
+            document.getElementById(
+                "clasificacionRiesgo"
+            ).value,
 
         lote:
-            document.getElementById("lote").value,
+            document.getElementById(
+                "lote"
+            ).value,
 
         fechaVencimiento:
-            document.getElementById("fechaVencimiento").value,
+            document.getElementById(
+                "fechaVencimiento"
+            ).value,
 
         cantidad:
             Number(
-                document.getElementById("cantidad").value
+                document.getElementById(
+                    "cantidad"
+                ).value
             )
     };
 
-    const posicion = inventario.findIndex(
-        item => item.id === registro.id
-    );
+    if (
+        !registro.insumo ||
+        !registro.presentacion ||
+        registro.cantidad <= 0
+    ) {
+
+        alert(
+            "Completa los campos obligatorios."
+        );
+
+        return;
+    }
+
+    const posicion =
+        inventario.findIndex(
+            item =>
+                item.id === registro.id
+        );
 
     if (posicion >= 0) {
 
-        inventario[posicion] = registro;
+        inventario[posicion] =
+            registro;
 
-        if (guardarInventario(inventario)) {
-
-            alert(
-                "El registro fue actualizado correctamente."
-            );
-
-        } else {
+        if (!guardarInventario(inventario)) {
             return;
         }
+
+        alert(
+            "El registro fue actualizado correctamente."
+        );
 
     } else {
 
         inventario.push(registro);
 
-        if (guardarInventario(inventario)) {
-
-            alert(
-                "Ingreso registrado correctamente."
-            );
-
-        } else {
+        if (!guardarInventario(inventario)) {
             return;
         }
+
+        alert(
+            "Ingreso registrado correctamente."
+        );
     }
 
     limpiarFormulario();
@@ -486,25 +579,139 @@ function guardarIngreso(event) {
 }
 
 /* =====================================================
-   MOSTRAR INVENTARIO ACTUAL
+   INVENTARIO ACTUAL / HISTORIAL
 ===================================================== */
+
+let viendoHistorialEntradas = false;
+
+function alternarVistaInventario() {
+
+    viendoHistorialEntradas =
+        !viendoHistorialEntradas;
+
+    const btn =
+        document.getElementById(
+            "btnCambiarVistaInv"
+        );
+
+    const titulo =
+        document.getElementById(
+            "tituloInventario"
+        );
+
+    const subtitulo =
+        document.getElementById(
+            "subtituloInventario"
+        );
+
+    const tablaInv =
+        document.getElementById(
+            "contenedorTablaInventario"
+        );
+
+    const tablaHistorial =
+        document.getElementById(
+            "contenedorHistorialEntradas"
+        );
+
+    if (viendoHistorialEntradas) {
+
+        if (btn) {
+            btn.textContent =
+                "Ver Inventario Actual";
+        }
+
+        if (titulo) {
+            titulo.textContent =
+                "Historial de Entradas";
+        }
+
+        if (subtitulo) {
+            subtitulo.textContent =
+                "Registro completo de todos los ingresos realizados al sistema.";
+        }
+
+        if (tablaInv) {
+            tablaInv.style.display =
+                "none";
+        }
+
+        if (tablaHistorial) {
+            tablaHistorial.style.display =
+                "block";
+        }
+
+        cargarHistorialEntradas();
+
+    } else {
+
+        if (btn) {
+            btn.textContent =
+                "Ver Historial de Entradas";
+        }
+
+        if (titulo) {
+            titulo.textContent =
+                "Inventario Actual";
+        }
+
+        if (subtitulo) {
+            subtitulo.textContent =
+                "Consulta, edita o elimina los registros existentes.";
+        }
+
+        if (tablaInv) {
+            tablaInv.style.display =
+                "block";
+        }
+
+        if (tablaHistorial) {
+            tablaHistorial.style.display =
+                "none";
+        }
+
+        cargarTablaInventario();
+    }
+}
 
 function mostrarInventarioActual() {
 
-    viendoHistorialEntradas = false;
+    viendoHistorialEntradas =
+        false;
 
-    const btn = document.getElementById("btnCambiarVistaInv");
-    const titulo = document.getElementById("tituloInventario");
-    const subtitulo = document.getElementById("subtituloInventario");
-    const tablaInv = document.getElementById("contenedorTablaInventario");
-    const tablaHistorial = document.getElementById("contenedorHistorialEntradas");
+    const btn =
+        document.getElementById(
+            "btnCambiarVistaInv"
+        );
+
+    const titulo =
+        document.getElementById(
+            "tituloInventario"
+        );
+
+    const subtitulo =
+        document.getElementById(
+            "subtituloInventario"
+        );
+
+    const tablaInv =
+        document.getElementById(
+            "contenedorTablaInventario"
+        );
+
+    const tablaHistorial =
+        document.getElementById(
+            "contenedorHistorialEntradas"
+        );
 
     if (btn) {
-        btn.textContent = "Ver Historial de Entradas";
+        btn.textContent =
+            "Ver Historial de Entradas";
     }
 
     if (titulo) {
-        titulo.textContent = "Inventario Actual";
+        titulo.textContent =
+            "Inventario Actual";
     }
 
     if (subtitulo) {
@@ -513,11 +720,13 @@ function mostrarInventarioActual() {
     }
 
     if (tablaInv) {
-        tablaInv.style.display = "block";
+        tablaInv.style.display =
+            "block";
     }
 
     if (tablaHistorial) {
-        tablaHistorial.style.display = "none";
+        tablaHistorial.style.display =
+            "none";
     }
 
     cargarTablaInventario();
@@ -529,11 +738,18 @@ function mostrarInventarioActual() {
 
 function cargarTablaInventario() {
 
-    const cuerpo = document.getElementById("inventarioBody");
+    const cuerpo =
+        document.getElementById(
+            "inventarioBody"
+        );
 
     if (!cuerpo) return;
 
-    const inventario = obtenerInventario();
+    const inventario =
+        obtenerInventario();
+
+    const salidas =
+        obtenerSalidas();
 
     cuerpo.innerHTML = "";
 
@@ -541,7 +757,7 @@ function cargarTablaInventario() {
 
         cuerpo.innerHTML = `
             <tr>
-                <td colspan="12">
+                <td colspan="13">
                     No hay registros en el inventario.
                 </td>
             </tr>
@@ -550,24 +766,29 @@ function cargarTablaInventario() {
         return;
     }
 
-    const salidas = obtenerSalidas();
-
     inventario.forEach(item => {
 
-        const salidasItem = salidas.filter(
-            salida => salida.inventarioId === item.id
-        );
+        const salidasItem =
+            salidas.filter(
+                salida =>
+                    salida.inventarioId ===
+                    item.id
+            );
 
-        const totalSalidas = salidasItem.reduce(
-            (total, salida) =>
-                total + Number(salida.cantidad),
-            0
-        );
+        const totalSalidas =
+            salidasItem.reduce(
+                (total, salida) =>
+                    total +
+                    Number(salida.cantidad),
+                0
+            );
 
         const existencia =
-            Number(item.cantidad) - totalSalidas;
+            Number(item.cantidad) -
+            totalSalidas;
 
-        const fila = document.createElement("tr");
+        const fila =
+            document.createElement("tr");
 
         fila.innerHTML = `
 
@@ -600,7 +821,9 @@ function cargarTablaInventario() {
             </td>
 
             <td>
-                ${formatearFecha(item.fechaVencimiento)}
+                ${formatearFecha(
+                    item.fechaVencimiento
+                )}
             </td>
 
             <td>
@@ -612,9 +835,17 @@ function cargarTablaInventario() {
             </td>
 
             <td class="existencia ${
-                existencia <= 0 ? "cero" : ""
+                existencia <= 0
+                    ? "cero"
+                    : ""
             }">
                 ${existencia}
+            </td>
+
+            <td>
+                ${formatearFechaHora(
+                    item.fechaRegistro
+                )}
             </td>
 
             <td class="acciones">
@@ -645,11 +876,14 @@ function cargarTablaInventario() {
 function cargarHistorialEntradas() {
 
     const cuerpo =
-        document.getElementById("historialEntradasBody");
+        document.getElementById(
+            "historialEntradasBody"
+        );
 
     if (!cuerpo) return;
 
-    const inventario = obtenerInventario();
+    const inventario =
+        obtenerInventario();
 
     cuerpo.innerHTML = "";
 
@@ -657,7 +891,7 @@ function cargarHistorialEntradas() {
 
         cuerpo.innerHTML = `
             <tr>
-                <td colspan="10">
+                <td colspan="11">
                     No hay historial de entradas registrado.
                 </td>
             </tr>
@@ -666,20 +900,24 @@ function cargarHistorialEntradas() {
         return;
     }
 
-    const historial = [...inventario].sort(
-        (a, b) =>
-            new Date(b.fechaRegistro) -
-            new Date(a.fechaRegistro)
-    );
+    const historial =
+        [...inventario].sort(
+            (a, b) =>
+                new Date(b.fechaRegistro) -
+                new Date(a.fechaRegistro)
+        );
 
     historial.forEach(item => {
 
-        const fila = document.createElement("tr");
+        const fila =
+            document.createElement("tr");
 
         fila.innerHTML = `
 
             <td>
-                ${formatearFechaHora(item.fechaRegistro)}
+                ${formatearFechaHora(
+                    item.fechaRegistro
+                )}
             </td>
 
             <td>
@@ -711,7 +949,9 @@ function cargarHistorialEntradas() {
             </td>
 
             <td>
-                ${formatearFecha(item.fechaVencimiento)}
+                ${formatearFecha(
+                    item.fechaVencimiento
+                )}
             </td>
 
             <td>
@@ -720,6 +960,9 @@ function cargarHistorialEntradas() {
                 </strong>
             </td>
 
+            <td>
+                Activo
+            </td>
         `;
 
         cuerpo.appendChild(fila);
@@ -732,50 +975,69 @@ function cargarHistorialEntradas() {
 
 function editarRegistro(id) {
 
-    const inventario = obtenerInventario();
+    const inventario =
+        obtenerInventario();
 
-    const registro = inventario.find(
-        item => item.id === id
-    );
+    const registro =
+        inventario.find(
+            item => item.id === id
+        );
 
     if (!registro) {
 
-        alert("No se encontró el registro.");
+        alert(
+            "No se encontró el registro."
+        );
 
         return;
     }
 
-    document.getElementById("registroId").value =
-        registro.id;
+    document.getElementById(
+        "registroId"
+    ).value = registro.id;
 
-    document.getElementById("insumo").value =
-        registro.insumo;
+    document.getElementById(
+        "insumo"
+    ).value = registro.insumo;
 
-    document.getElementById("presentacion").value =
-        registro.presentacion;
+    document.getElementById(
+        "presentacion"
+    ).value = registro.presentacion;
 
-    document.getElementById("marca").value =
-        registro.marca;
+    document.getElementById(
+        "marca"
+    ).value = registro.marca;
 
-    document.getElementById("serie").value =
-        registro.serie;
+    document.getElementById(
+        "serie"
+    ).value = registro.serie;
 
-    document.getElementById("registroSanitario").value =
+    document.getElementById(
+        "registroSanitario"
+    ).value =
         registro.registroSanitario;
 
-    document.getElementById("clasificacionRiesgo").value =
+    document.getElementById(
+        "clasificacionRiesgo"
+    ).value =
         registro.clasificacionRiesgo;
 
-    document.getElementById("lote").value =
-        registro.lote;
+    document.getElementById(
+        "lote"
+    ).value = registro.lote;
 
-    document.getElementById("fechaVencimiento").value =
+    document.getElementById(
+        "fechaVencimiento"
+    ).value =
         registro.fechaVencimiento;
 
-    document.getElementById("cantidad").value =
-        registro.cantidad;
+    document.getElementById(
+        "cantidad"
+    ).value = registro.cantidad;
 
-    document.getElementById("tituloFormulario").textContent =
+    document.getElementById(
+        "tituloFormulario"
+    ).textContent =
         "Editar registro";
 
     mostrarVista("ingreso");
@@ -787,39 +1049,50 @@ function editarRegistro(id) {
 
 function eliminarRegistro(id) {
 
-    const inventario = obtenerInventario();
+    const inventario =
+        obtenerInventario();
 
-    const registro = inventario.find(
-        item => item.id === id
-    );
+    const registro =
+        inventario.find(
+            item => item.id === id
+        );
 
     if (!registro) return;
 
-    const confirmar = confirm(
-        `¿Está segura de eliminar "${registro.insumo}"?`
-    );
+    const confirmar =
+        confirm(
+            `¿Está segura de eliminar "${registro.insumo}"?`
+        );
 
     if (!confirmar) return;
 
-    let salidas = obtenerSalidas();
+    let salidas =
+        obtenerSalidas();
 
-    salidas = salidas.filter(
-        salida => salida.inventarioId !== id
-    );
+    salidas =
+        salidas.filter(
+            salida =>
+                salida.inventarioId !== id
+        );
 
     guardarSalidas(salidas);
 
-    const nuevoInventario = inventario.filter(
-        item => item.id !== id
-    );
+    const nuevoInventario =
+        inventario.filter(
+            item => item.id !== id
+        );
 
-    guardarInventario(nuevoInventario);
+    if (!guardarInventario(nuevoInventario)) {
+        return;
+    }
 
     cargarTablaInventario();
     cargarHistorialEntradas();
     cargarListaSalidas();
 
-    alert("El registro fue eliminado.");
+    alert(
+        "El registro fue eliminado."
+    );
 }
 
 /* =====================================================
@@ -829,41 +1102,55 @@ function eliminarRegistro(id) {
 function cargarListaSalidas() {
 
     const select =
-        document.getElementById("salidaInsumo");
+        document.getElementById(
+            "salidaInsumo"
+        );
 
     if (!select) return;
 
-    const inventario = obtenerInventario();
-    const salidas = obtenerSalidas();
+    const inventario =
+        obtenerInventario();
+
+    const salidas =
+        obtenerSalidas();
 
     select.innerHTML =
         '<option value="">Seleccione un insumo</option>';
 
     inventario.forEach(item => {
 
-        const salidasItem = salidas.filter(
-            salida =>
-                salida.inventarioId === item.id
-        );
-
-        const totalSalidas = salidasItem.reduce(
-            (total, salida) =>
-                total + Number(salida.cantidad),
-            0
-        );
+        const totalSalidas =
+            salidas
+                .filter(
+                    salida =>
+                        salida.inventarioId ===
+                        item.id
+                )
+                .reduce(
+                    (total, salida) =>
+                        total +
+                        Number(
+                            salida.cantidad
+                        ),
+                    0
+                );
 
         const existencia =
-            Number(item.cantidad) - totalSalidas;
+            Number(item.cantidad) -
+            totalSalidas;
 
         if (existencia > 0) {
 
             const option =
-                document.createElement("option");
+                document.createElement(
+                    "option"
+                );
 
-            option.value = item.id;
+            option.value =
+                item.id;
 
             option.textContent =
-                `${item.insumo} | ${item.presentacion} | Disponible: ${existencia}`;
+                `${item.insumo} | ${item.presentacion} | Lote: ${item.lote || "Sin lote"} | Disponible: ${existencia}`;
 
             select.appendChild(option);
         }
@@ -879,14 +1166,21 @@ function registrarSalida(event) {
     event.preventDefault();
 
     const inventarioId =
-        document.getElementById("salidaInsumo").value;
+        document.getElementById(
+            "salidaInsumo"
+        ).value;
 
     const cantidad =
         Number(
-            document.getElementById("salidaCantidad").value
+            document.getElementById(
+                "salidaCantidad"
+            ).value
         );
 
-    if (!inventarioId || cantidad <= 0) {
+    if (
+        !inventarioId ||
+        cantidad <= 0
+    ) {
 
         alert(
             "Seleccione un insumo e indique una cantidad válida."
@@ -895,35 +1189,47 @@ function registrarSalida(event) {
         return;
     }
 
-    const inventario = obtenerInventario();
+    const inventario =
+        obtenerInventario();
 
-    const item = inventario.find(
-        registro =>
-            registro.id === inventarioId
-    );
+    const item =
+        inventario.find(
+            registro =>
+                registro.id ===
+                inventarioId
+        );
 
     if (!item) {
 
-        alert("No se encontró el insumo.");
+        alert(
+            "No se encontró el insumo."
+        );
 
         return;
     }
 
-    const salidas = obtenerSalidas();
+    const salidas =
+        obtenerSalidas();
 
-    const totalSalidas = salidas
-        .filter(
-            salida =>
-                salida.inventarioId === inventarioId
-        )
-        .reduce(
-            (total, salida) =>
-                total + Number(salida.cantidad),
-            0
-        );
+    const totalSalidas =
+        salidas
+            .filter(
+                salida =>
+                    salida.inventarioId ===
+                    inventarioId
+            )
+            .reduce(
+                (total, salida) =>
+                    total +
+                    Number(
+                        salida.cantidad
+                    ),
+                0
+            );
 
     const existencia =
-        Number(item.cantidad) - totalSalidas;
+        Number(item.cantidad) -
+        totalSalidas;
 
     if (cantidad > existencia) {
 
@@ -936,13 +1242,17 @@ function registrarSalida(event) {
 
     const salida = {
 
-        id: Date.now().toString(),
+        id:
+            Date.now().toString(),
 
-        inventarioId: inventarioId,
+        inventarioId:
+            inventarioId,
 
-        cantidad: cantidad,
+        cantidad:
+            cantidad,
 
-        fecha: new Date().toISOString()
+        fecha:
+            new Date().toISOString()
     };
 
     salidas.push(salida);
@@ -951,13 +1261,289 @@ function registrarSalida(event) {
         return;
     }
 
-    document.getElementById("formSalida").reset();
+    const formulario =
+        document.getElementById(
+            "formSalida"
+        );
 
-    alert("Salida registrada correctamente.");
+    if (formulario) {
+        formulario.reset();
+    }
+
+    alert(
+        "Salida registrada correctamente."
+    );
 
     cargarListaSalidas();
     cargarTablaInventario();
     calcularConsumo();
+}
+
+/* =====================================================
+   FECHAS
+===================================================== */
+
+function obtenerFechaLocal() {
+
+    const hoy =
+        new Date();
+
+    const año =
+        hoy.getFullYear();
+
+    const mes =
+        String(
+            hoy.getMonth() + 1
+        ).padStart(2, "0");
+
+    const dia =
+        String(
+            hoy.getDate()
+        ).padStart(2, "0");
+
+    return `${año}-${mes}-${dia}`;
+}
+
+function fechaDesdeInput(valor) {
+
+    if (!valor) return null;
+
+    const partes =
+        valor.split("-");
+
+    if (partes.length !== 3) {
+        return null;
+    }
+
+    return new Date(
+        Number(partes[0]),
+        Number(partes[1]) - 1,
+        Number(partes[2])
+    );
+}
+
+function inicioDelDia(fecha) {
+
+    const nueva =
+        new Date(fecha);
+
+    nueva.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+    return nueva;
+}
+
+function finDelDia(fecha) {
+
+    const nueva =
+        new Date(fecha);
+
+    nueva.setHours(
+        23,
+        59,
+        59,
+        999
+    );
+
+    return nueva;
+}
+
+/* =====================================================
+   FECHA ACTUAL
+===================================================== */
+
+function establecerFechaActual() {
+
+    const campo =
+        document.getElementById(
+            "fechaConsumo"
+        );
+
+    if (!campo) return;
+
+    const hoy =
+        obtenerFechaLocal();
+
+    campo.max = hoy;
+
+    if (
+        !campo.value ||
+        campo.value > hoy
+    ) {
+        campo.value = hoy;
+    }
+
+    actualizarTextoSemana();
+}
+
+/* =====================================================
+   LIMITES DE FECHAS PARA EXCEL
+===================================================== */
+
+function establecerLimitesFechasExcel() {
+
+    const hoy =
+        obtenerFechaLocal();
+
+    const inicio =
+        document.getElementById(
+            "fechaExcelInicio"
+        );
+
+    const fin =
+        document.getElementById(
+            "fechaExcelFin"
+        );
+
+    if (inicio) {
+        inicio.max = hoy;
+    }
+
+    if (fin) {
+        fin.max = hoy;
+    }
+
+    /*
+       Si no hay fechas seleccionadas,
+       ponemos por defecto el día actual
+       para evitar descargar todo el historial
+       accidentalmente.
+    */
+
+    if (inicio && !inicio.value) {
+        inicio.value = hoy;
+    }
+
+    if (fin && !fin.value) {
+        fin.value = hoy;
+    }
+}
+
+function validarRangoExcel() {
+
+    const inicio =
+        document.getElementById(
+            "fechaExcelInicio"
+        );
+
+    const fin =
+        document.getElementById(
+            "fechaExcelFin"
+        );
+
+    if (!inicio || !fin) {
+        return false;
+    }
+
+    const hoy =
+        obtenerFechaLocal();
+
+    if (
+        inicio.value &&
+        inicio.value > hoy
+    ) {
+
+        alert(
+            "La fecha inicial no puede ser futura."
+        );
+
+        inicio.value = hoy;
+    }
+
+    if (
+        fin.value &&
+        fin.value > hoy
+    ) {
+
+        alert(
+            "La fecha final no puede ser futura."
+        );
+
+        fin.value = hoy;
+    }
+
+    if (
+        inicio.value &&
+        fin.value &&
+        inicio.value > fin.value
+    ) {
+
+        alert(
+            "La fecha inicial no puede ser posterior a la fecha final."
+        );
+
+        fin.value =
+            inicio.value;
+    }
+
+    return true;
+}
+
+/* =====================================================
+   OBTENER RANGO DE EXCEL
+===================================================== */
+
+function obtenerRangoExcel() {
+
+    const inicio =
+        document.getElementById(
+            "fechaExcelInicio"
+        );
+
+    const fin =
+        document.getElementById(
+            "fechaExcelFin"
+        );
+
+    if (!inicio || !fin) {
+        return null;
+    }
+
+    establecerLimitesFechasExcel();
+
+    validarRangoExcel();
+
+    if (
+        !inicio.value ||
+        !fin.value
+    ) {
+
+        alert(
+            "Selecciona una fecha inicial y una fecha final."
+        );
+
+        return null;
+    }
+
+    const fechaInicio =
+        fechaDesdeInput(
+            inicio.value
+        );
+
+    const fechaFin =
+        fechaDesdeInput(
+            fin.value
+        );
+
+    if (!fechaInicio || !fechaFin) {
+
+        alert(
+            "El rango de fechas no es válido."
+        );
+
+        return null;
+    }
+
+    return {
+        textoInicio: inicio.value,
+        textoFin: fin.value,
+        inicio: inicioDelDia(fechaInicio),
+        fin: finDelDia(fechaFin)
+    };
 }
 
 /* =====================================================
@@ -966,50 +1552,128 @@ function registrarSalida(event) {
 
 function descargarExcelSalidas() {
 
-    const salidas = obtenerSalidas();
-    const inventario = obtenerInventario();
+    const salidas =
+        obtenerSalidas();
+
+    const inventario =
+        obtenerInventario();
 
     if (salidas.length === 0) {
 
         alert(
-            "No hay salidas registradas para descargar."
+            "No hay salidas registradas."
+        );
+
+        return;
+    }
+
+    const rango =
+        obtenerRangoExcel();
+
+    if (!rango) {
+        return;
+    }
+
+    /*
+       FILTRAR POR FECHA REAL DE LA SALIDA
+    */
+
+    const salidasFiltradas =
+        salidas.filter(salida => {
+
+            const fecha =
+                new Date(salida.fecha);
+
+            if (
+                isNaN(
+                    fecha.getTime()
+                )
+            ) {
+                return false;
+            }
+
+            return (
+                fecha >= rango.inicio &&
+                fecha <= rango.fin
+            );
+        });
+
+    if (salidasFiltradas.length === 0) {
+
+        alert(
+            `No existen salidas entre ${formatearFecha(rango.textoInicio)} y ${formatearFecha(rango.textoFin)}.`
         );
 
         return;
     }
 
     let csvContent =
-        "\uFEFFFecha,Insumo,Presentación,Lote,Cantidad Retirada\n";
+        "\uFEFFFecha,Insumo,Presentación,Marca,Serie,Lote,Cantidad Retirada\n";
 
-    salidas.forEach(salida => {
+    salidasFiltradas
+        .sort(
+            (a, b) =>
+                new Date(a.fecha) -
+                new Date(b.fecha)
+        )
+        .forEach(salida => {
 
-        const item = inventario.find(
-            inv =>
-                inv.id === salida.inventarioId
-        );
+            const item =
+                inventario.find(
+                    inv =>
+                        inv.id ===
+                        salida.inventarioId
+                );
 
-        const insumoNombre = item
-            ? `"${item.insumo.replace(/"/g, '""')}"`
-            : '"Insumo desconocido"';
+            const fecha =
+                csvCampo(
+                    formatearFechaHora(
+                        salida.fecha
+                    )
+                );
 
-        const presentacion = item
-            ? `"${item.presentacion.replace(/"/g, '""')}"`
-            : '""';
+            const insumo =
+                csvCampo(
+                    item
+                        ? item.insumo
+                        : "Insumo desconocido"
+                );
 
-        const lote = item
-            ? `"${item.lote || ""}"`
-            : '""';
+            const presentacion =
+                csvCampo(
+                    item
+                        ? item.presentacion
+                        : ""
+                );
 
-        const fechaFormateada =
-            formatearFechaHora(salida.fecha);
+            const marca =
+                csvCampo(
+                    item
+                        ? item.marca
+                        : ""
+                );
 
-        csvContent +=
-            `${fechaFormateada},${insumoNombre},${presentacion},${lote},${salida.cantidad}\n`;
-    });
+            const serie =
+                csvCampo(
+                    item
+                        ? item.serie
+                        : ""
+                );
+
+            const lote =
+                csvCampo(
+                    item
+                        ? item.lote
+                        : ""
+                );
+
+            csvContent +=
+                `${fecha},${insumo},${presentacion},${marca},${serie},${lote},${salida.cantidad}\n`;
+        });
 
     descargarCSV(
         csvContent,
-        `Reporte_Salidas_${obtenerFechaArchivo()}.csv`
+        `Reporte_Salidas_${rango.textoInicio}_a_${rango.textoFin}.csv`
     );
 }
 
@@ -1019,12 +1683,57 @@ function descargarExcelSalidas() {
 
 function descargarExcelEntradas() {
 
-    const inventario = obtenerInventario();
+    const inventario =
+        obtenerInventario();
 
     if (inventario.length === 0) {
 
         alert(
-            "No hay entradas registradas para descargar."
+            "No hay entradas registradas."
+        );
+
+        return;
+    }
+
+    const rango =
+        obtenerRangoExcel();
+
+    if (!rango) {
+        return;
+    }
+
+    /*
+       FILTRAR POR FECHA DE REGISTRO
+    */
+
+    const entradasFiltradas =
+        inventario.filter(item => {
+
+            const fecha =
+                new Date(
+                    item.fechaRegistro
+                );
+
+            if (
+                isNaN(
+                    fecha.getTime()
+                )
+            ) {
+                return false;
+            }
+
+            return (
+                fecha >= rango.inicio &&
+                fecha <= rango.fin
+            );
+        });
+
+    if (
+        entradasFiltradas.length === 0
+    ) {
+
+        alert(
+            `No existen entradas entre ${formatearFecha(rango.textoInicio)} y ${formatearFecha(rango.textoFin)}.`
         );
 
         return;
@@ -1033,67 +1742,94 @@ function descargarExcelEntradas() {
     let csvContent =
         "\uFEFFFecha de Registro,Insumo,Presentación,Marca,Serie,Registro sanitario / INVIMA,Clasificación de riesgo,Lote,Fecha vencimiento,Cantidad ingresada\n";
 
-    const historial = [...inventario].sort(
-        (a, b) =>
-            new Date(b.fechaRegistro) -
-            new Date(a.fechaRegistro)
-    );
-
-    historial.forEach(item => {
-
-        const fecha =
-            formatearFechaHora(item.fechaRegistro);
-
-        const insumo =
-            csvCampo(item.insumo);
-
-        const presentacion =
-            csvCampo(item.presentacion);
-
-        const marca =
-            csvCampo(item.marca);
-
-        const serie =
-            csvCampo(item.serie);
-
-        const registroSanitario =
-            csvCampo(item.registroSanitario);
-
-        const riesgo =
-            csvCampo(item.clasificacionRiesgo);
-
-        const lote =
-            csvCampo(item.lote);
-
-        const vencimiento =
-            csvCampo(
-                formatearFecha(
-                    item.fechaVencimiento
+    entradasFiltradas
+        .sort(
+            (a, b) =>
+                new Date(
+                    a.fechaRegistro
+                ) -
+                new Date(
+                    b.fechaRegistro
                 )
-            );
+        )
+        .forEach(item => {
 
-        csvContent +=
-            `${csvCampo(fecha)},${insumo},${presentacion},${marca},${serie},${registroSanitario},${riesgo},${lote},${vencimiento},${item.cantidad}\n`;
-    });
+            const fecha =
+                csvCampo(
+                    formatearFechaHora(
+                        item.fechaRegistro
+                    )
+                );
+
+            const insumo =
+                csvCampo(
+                    item.insumo
+                );
+
+            const presentacion =
+                csvCampo(
+                    item.presentacion
+                );
+
+            const marca =
+                csvCampo(
+                    item.marca
+                );
+
+            const serie =
+                csvCampo(
+                    item.serie
+                );
+
+            const registroSanitario =
+                csvCampo(
+                    item.registroSanitario
+                );
+
+            const riesgo =
+                csvCampo(
+                    item.clasificacionRiesgo
+                );
+
+            const lote =
+                csvCampo(
+                    item.lote
+                );
+
+            const vencimiento =
+                csvCampo(
+                    formatearFecha(
+                        item.fechaVencimiento
+                    )
+                );
+
+            csvContent +=
+                `${fecha},${insumo},${presentacion},${marca},${serie},${registroSanitario},${riesgo},${lote},${vencimiento},${item.cantidad}\n`;
+        });
 
     descargarCSV(
         csvContent,
-        `Reporte_Entradas_${obtenerFechaArchivo()}.csv`
+        `Reporte_Entradas_${rango.textoInicio}_a_${rango.textoFin}.csv`
     );
 }
 
 /* =====================================================
-   DESCARGA GENERAL CSV
+   DESCARGA CSV
 ===================================================== */
 
-function descargarCSV(contenido, nombreArchivo) {
+function descargarCSV(
+    contenido,
+    nombreArchivo
+) {
 
-    const blob = new Blob(
-        [contenido],
-        {
-            type: "text/csv;charset=utf-8;"
-        }
-    );
+    const blob =
+        new Blob(
+            [contenido],
+            {
+                type:
+                    "text/csv;charset=utf-8;"
+            }
+        );
 
     const url =
         URL.createObjectURL(blob);
@@ -1114,7 +1850,7 @@ function descargarCSV(contenido, nombreArchivo) {
 }
 
 /* =====================================================
-   FORMATO PARA CSV
+   FORMATO CSV
 ===================================================== */
 
 function csvCampo(valor) {
@@ -1126,67 +1862,17 @@ function csvCampo(valor) {
         return '""';
     }
 
-    return `"${String(valor).replace(/"/g, '""')}"`;
+    return `"${String(valor)
+        .replace(/"/g, '""')}"`;
 }
 
 /* =====================================================
-   FECHA PARA NOMBRE DE ARCHIVO
+   FECHA PARA ARCHIVO
 ===================================================== */
 
 function obtenerFechaArchivo() {
 
-    const hoy = new Date();
-
-    const año =
-        hoy.getFullYear();
-
-    const mes =
-        String(
-            hoy.getMonth() + 1
-        ).padStart(2, "0");
-
-    const dia =
-        String(
-            hoy.getDate()
-        ).padStart(2, "0");
-
-    return `${año}-${mes}-${dia}`;
-}
-
-/* =====================================================
-   FECHA ACTUAL
-===================================================== */
-
-function establecerFechaActual() {
-
-    const campo =
-        document.getElementById("fechaConsumo");
-
-    if (!campo) return;
-
-    const hoy = new Date();
-
-    const año =
-        hoy.getFullYear();
-
-    const mes =
-        String(
-            hoy.getMonth() + 1
-        ).padStart(2, "0");
-
-    const dia =
-        String(
-            hoy.getDate()
-        ).padStart(2, "0");
-
-    const fechaFormateada =
-        `${año}-${mes}-${dia}`;
-
-    campo.value = fechaFormateada;
-
-    campo.max = fechaFormateada;
-
-    actualizarTextoSemana();
+    return obtenerFechaLocal();
 }
 
 /* =====================================================
@@ -1196,24 +1882,37 @@ function establecerFechaActual() {
 function calcularConsumo() {
 
     const cuerpo =
-        document.getElementById("consumoBody");
+        document.getElementById(
+            "consumoBody"
+        );
 
     if (!cuerpo) return;
 
-    const inventario =
-        obtenerInventario();
+    const campo =
+        document.getElementById(
+            "fechaConsumo"
+        );
 
-    const salidas =
-        obtenerSalidas();
+    if (!campo) return;
 
-    cuerpo.innerHTML = "";
+    const fechaSeleccionada =
+        campo.value;
 
-    if (salidas.length === 0) {
+    const hoyTexto =
+        obtenerFechaLocal();
+
+    /*
+       NO PERMITIR FUTURO
+    */
+
+    if (
+        !fechaSeleccionada
+    ) {
 
         cuerpo.innerHTML = `
             <tr>
                 <td colspan="10">
-                    No existen salidas registradas.
+                    Selecciona una fecha para calcular el consumo.
                 </td>
             </tr>
         `;
@@ -1221,94 +1920,235 @@ function calcularConsumo() {
         return;
     }
 
-    const grupos = {};
+    if (
+        fechaSeleccionada >
+        hoyTexto
+    ) {
 
-    salidas.forEach(salida => {
+        alert(
+            "No puedes consultar una semana futura."
+        );
 
-        if (!grupos[salida.inventarioId]) {
+        campo.value =
+            hoyTexto;
 
-            grupos[salida.inventarioId] = [];
+        actualizarTextoSemana();
+
+        return;
+    }
+
+    const fechaSeleccionadaObj =
+        fechaDesdeInput(
+            fechaSeleccionada
+        );
+
+    if (!fechaSeleccionadaObj) {
+        return;
+    }
+
+    /*
+       OBTENER LUNES Y DOMINGO
+    */
+
+    const lunes =
+        obtenerLunes(
+            fechaSeleccionadaObj
+        );
+
+    let domingo =
+        new Date(lunes);
+
+    domingo.setDate(
+        lunes.getDate() + 6
+    );
+
+    /*
+       La semana no puede ir más allá
+       de hoy.
+    */
+
+    const hoy =
+        fechaDesdeInput(
+            hoyTexto
+        );
+
+    const finReal =
+        domingo > hoy
+            ? hoy
+            : domingo;
+
+    const inicio =
+        inicioDelDia(lunes);
+
+    const fin =
+        finDelDia(finReal);
+
+    const salidas =
+        obtenerSalidas();
+
+    const inventario =
+        obtenerInventario();
+
+    cuerpo.innerHTML = "";
+
+    /*
+       FILTRAR SOLO LAS SALIDAS
+       DE ESA SEMANA
+    */
+
+    const salidasSemana =
+        salidas.filter(salida => {
+
+            const fecha =
+                new Date(
+                    salida.fecha
+                );
+
+            if (
+                isNaN(
+                    fecha.getTime()
+                )
+            ) {
+                return false;
+            }
+
+            return (
+                fecha >= inicio &&
+                fecha <= fin
+            );
+        });
+
+    /*
+       AGRUPAR POR INSUMO / REGISTRO
+    */
+
+    const consumos =
+        {};
+
+    salidasSemana.forEach(
+        salida => {
+
+            if (
+                !consumos[
+                    salida.inventarioId
+                ]
+            ) {
+
+                consumos[
+                    salida.inventarioId
+                ] = 0;
+            }
+
+            consumos[
+                salida.inventarioId
+            ] += Number(
+                salida.cantidad
+            );
         }
+    );
 
-        grupos[salida.inventarioId].push(salida);
-    });
+    /*
+       SI NO HAY SALIDAS
+    */
 
-    Object.keys(grupos).forEach(
-        inventarioId => {
+    if (
+        Object.keys(consumos).length === 0
+    ) {
+
+        cuerpo.innerHTML = `
+            <tr>
+                <td colspan="10">
+                    No existen salidas registradas
+                    para la semana seleccionada.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    /*
+       MOSTRAR CONSUMO DE LA SEMANA
+    */
+
+    Object.keys(consumos)
+        .forEach(inventarioId => {
 
             const item =
                 inventario.find(
                     registro =>
-                        registro.id === inventarioId
+                        registro.id ===
+                        inventarioId
                 );
 
             if (!item) return;
 
-            const registros =
-                grupos[inventarioId];
+            const consumoSemana =
+                consumos[
+                    inventarioId
+                ];
 
-            const semanas = {};
-
-            registros.forEach(salida => {
-
-                const semana =
-                    obtenerSemana(
-                        new Date(salida.fecha)
-                    );
-
-                if (!semanas[semana]) {
-                    semanas[semana] = 0;
-                }
-
-                semanas[semana] +=
-                    Number(salida.cantidad);
-            });
-
-            const cantidades =
-                Object.values(semanas);
-
-            const consumoTotal =
-                cantidades.reduce(
-                    (a, b) => a + b,
-                    0
-                );
+            /*
+               Para el promedio semanal:
+               calculamos las semanas históricas
+               COMPLETAS/REGISTRADAS hasta la
+               semana seleccionada.
+            */
 
             const promedio =
-                cantidades.length > 0
-                    ? consumoTotal / cantidades.length
-                    : 0;
+                calcularPromedioSemanal(
+                    inventarioId,
+                    salidas,
+                    fechaSeleccionadaObj
+                );
 
             const fila =
-                document.createElement("tr");
+                document.createElement(
+                    "tr"
+                );
 
             fila.innerHTML = `
 
                 <td>
-                    ${escapar(item.insumo)}
+                    ${escapar(
+                        item.insumo
+                    )}
                 </td>
 
                 <td>
-                    ${escapar(item.presentacion)}
+                    ${escapar(
+                        item.presentacion
+                    )}
                 </td>
 
                 <td>
-                    ${escapar(item.marca)}
+                    ${escapar(
+                        item.marca
+                    )}
                 </td>
 
                 <td>
-                    ${escapar(item.serie)}
+                    ${escapar(
+                        item.serie
+                    )}
                 </td>
 
                 <td>
-                    ${escapar(item.registroSanitario)}
+                    ${escapar(
+                        item.registroSanitario
+                    )}
                 </td>
 
                 <td>
-                    ${escapar(item.clasificacionRiesgo)}
+                    ${escapar(
+                        item.clasificacionRiesgo
+                    )}
                 </td>
 
                 <td>
-                    ${escapar(item.lote)}
+                    ${escapar(
+                        item.lote
+                    )}
                 </td>
 
                 <td>
@@ -1319,7 +2159,7 @@ function calcularConsumo() {
 
                 <td>
                     <strong>
-                        ${consumoTotal}
+                        ${consumoSemana}
                     </strong>
                 </td>
 
@@ -1331,64 +2171,251 @@ function calcularConsumo() {
 
             `;
 
-            cuerpo.appendChild(fila);
-        }
+            cuerpo.appendChild(
+                fila
+            );
+        });
+}
+
+/* =====================================================
+   PROMEDIO SEMANAL
+===================================================== */
+
+function calcularPromedioSemanal(
+    inventarioId,
+    salidas,
+    fechaReferencia
+) {
+
+    const semanas = {};
+
+    salidas
+        .filter(
+            salida =>
+                salida.inventarioId ===
+                inventarioId
+        )
+        .forEach(salida => {
+
+            const fecha =
+                new Date(
+                    salida.fecha
+                );
+
+            if (
+                isNaN(
+                    fecha.getTime()
+                )
+            ) {
+                return;
+            }
+
+            /*
+               Solo semanas hasta la
+               semana de referencia.
+            */
+
+            const lunes =
+                obtenerLunes(fecha);
+
+            const lunesReferencia =
+                obtenerLunes(
+                    fechaReferencia
+                );
+
+            if (
+                lunes >
+                lunesReferencia
+            ) {
+                return;
+            }
+
+            const clave =
+                fechaClave(
+                    lunes
+                );
+
+            if (
+                !semanas[clave]
+            ) {
+                semanas[clave] = 0;
+            }
+
+            semanas[clave] +=
+                Number(
+                    salida.cantidad
+                );
+        });
+
+    const valores =
+        Object.values(
+            semanas
+        );
+
+    if (valores.length === 0) {
+        return 0;
+    }
+
+    const total =
+        valores.reduce(
+            (a, b) =>
+                a + b,
+            0
+        );
+
+    return (
+        total /
+        valores.length
     );
 }
 
 /* =====================================================
-   CALCULAR SEMANA
+   OBTENER LUNES DE UNA FECHA
 ===================================================== */
 
-function obtenerSemana(fecha) {
+function obtenerLunes(fecha) {
 
-    const fechaUTC =
-        new Date(
-            Date.UTC(
-                fecha.getFullYear(),
-                fecha.getMonth(),
-                fecha.getDate()
-            )
-        );
+    const lunes =
+        new Date(fecha);
 
     const dia =
-        fechaUTC.getUTCDay() || 7;
+        lunes.getDay();
 
-    fechaUTC.setUTCDate(
-        fechaUTC.getUTCDate() +
-        4 -
-        dia
+    const diferencia =
+        dia === 0
+            ? -6
+            : 1 - dia;
+
+    lunes.setDate(
+        lunes.getDate() +
+        diferencia
     );
 
-    const inicioAño =
-        new Date(
-            Date.UTC(
-                fechaUTC.getUTCFullYear(),
-                0,
-                1
-            )
-        );
-
-    const numeroSemana =
-        Math.ceil(
-            (
-                (
-                    (
-                        fechaUTC -
-                        inicioAño
-                    ) /
-                    86400000
-                ) +
-                1
-            ) /
-            7
-        );
-
-    return (
-        fechaUTC.getUTCFullYear() +
-        "-S" +
-        String(numeroSemana).padStart(2, "0")
+    lunes.setHours(
+        0,
+        0,
+        0,
+        0
     );
+
+    return lunes;
+}
+
+function fechaClave(fecha) {
+
+    const año =
+        fecha.getFullYear();
+
+    const mes =
+        String(
+            fecha.getMonth() + 1
+        ).padStart(2, "0");
+
+    const dia =
+        String(
+            fecha.getDate()
+        ).padStart(2, "0");
+
+    return `${año}-${mes}-${dia}`;
+}
+
+/* =====================================================
+   TEXTO DE SEMANA
+===================================================== */
+
+function actualizarTextoSemana() {
+
+    const campo =
+        document.getElementById(
+            "fechaConsumo"
+        );
+
+    const textoSemana =
+        document.getElementById(
+            "textoRangoSemana"
+        );
+
+    if (
+        !campo ||
+        !textoSemana
+    ) {
+        return;
+    }
+
+    const inputFecha =
+        campo.value;
+
+    if (!inputFecha) {
+
+        textoSemana.textContent =
+            "";
+
+        return;
+    }
+
+    const hoy =
+        obtenerFechaLocal();
+
+    if (
+        inputFecha > hoy
+    ) {
+
+        alert(
+            "No puedes consultar una fecha futura."
+        );
+
+        campo.value =
+            hoy;
+
+        actualizarTextoSemana();
+
+        return;
+    }
+
+    const fecha =
+        fechaDesdeInput(
+            inputFecha
+        );
+
+    if (!fecha) {
+        return;
+    }
+
+    const lunes =
+        obtenerLunes(fecha);
+
+    const domingo =
+        new Date(lunes);
+
+    domingo.setDate(
+        lunes.getDate() + 6
+    );
+
+    const hoyObj =
+        fechaDesdeInput(hoy);
+
+    /*
+       Mostrar solo hasta hoy
+       si la semana está en curso.
+    */
+
+    const fechaFinal =
+        domingo > hoyObj
+            ? hoyObj
+            : domingo;
+
+    const textoInicio =
+        formatearFecha(
+            fechaClave(lunes)
+        );
+
+    const textoFin =
+        formatearFecha(
+            fechaClave(fechaFinal)
+        );
+
+    textoSemana.textContent =
+        `Semana del ${textoInicio} al ${textoFin}`;
 }
 
 /* =====================================================
@@ -1400,9 +2427,11 @@ function formatearFecha(fecha) {
     if (!fecha) return "";
 
     const partes =
-        fecha.split("-");
+        String(fecha).split("-");
 
-    if (partes.length !== 3) {
+    if (
+        partes.length !== 3
+    ) {
         return fecha;
     }
 
@@ -1415,14 +2444,22 @@ function formatearFecha(fecha) {
    FORMATEAR FECHA Y HORA
 ===================================================== */
 
-function formatearFechaHora(isoString) {
+function formatearFechaHora(
+    isoString
+) {
 
     if (!isoString) return "";
 
     const fecha =
-        new Date(isoString);
+        new Date(
+            isoString
+        );
 
-    if (isNaN(fecha.getTime())) {
+    if (
+        isNaN(
+            fecha.getTime()
+        )
+    ) {
         return isoString;
     }
 
@@ -1455,116 +2492,7 @@ function formatearFechaHora(isoString) {
 }
 
 /* =====================================================
-   TEXTO DE SEMANA
-===================================================== */
-
-function actualizarTextoSemana() {
-
-    const campo =
-        document.getElementById("fechaConsumo");
-
-    const textoSemana =
-        document.getElementById("textoRangoSemana");
-
-    if (!campo || !textoSemana) {
-        return;
-    }
-
-    const inputFecha =
-        campo.value;
-
-    if (!inputFecha) {
-
-        textoSemana.textContent =
-            "";
-
-        return;
-    }
-
-    if (
-        campo.max &&
-        inputFecha > campo.max
-    ) {
-
-        alert(
-            "No puedes consultar una semana en el futuro. Se ajustará a la fecha actual."
-        );
-
-        campo.value =
-            campo.max;
-
-        actualizarTextoSemana();
-
-        return;
-    }
-
-    const partes =
-        inputFecha.split("-");
-
-    const fecha =
-        new Date(
-            partes[0],
-            partes[1] - 1,
-            partes[2]
-        );
-
-    const diaSemana =
-        fecha.getDay();
-
-    const diferenciaLunes =
-        diaSemana === 0
-            ? -6
-            : 1 - diaSemana;
-
-    const lunes =
-        new Date(fecha);
-
-    lunes.setDate(
-        fecha.getDate() +
-        diferenciaLunes
-    );
-
-    const domingo =
-        new Date(lunes);
-
-    domingo.setDate(
-        lunes.getDate() +
-        6
-    );
-
-    const opcionesMes = {
-        month: "long"
-    };
-
-    const mesLunes =
-        lunes.toLocaleDateString(
-            "es-ES",
-            opcionesMes
-        );
-
-    const mesDomingo =
-        domingo.toLocaleDateString(
-            "es-ES",
-            opcionesMes
-        );
-
-    const año =
-        domingo.getFullYear();
-
-    if (mesLunes === mesDomingo) {
-
-        textoSemana.textContent =
-            `Semana del ${lunes.getDate()} al ${domingo.getDate()} de ${mesLunes} de ${año}`;
-
-    } else {
-
-        textoSemana.textContent =
-            `Semana del ${lunes.getDate()} de ${mesLunes} al ${domingo.getDate()} de ${mesDomingo} de ${año}`;
-    }
-}
-
-/* =====================================================
-   ESCAPAR TEXTO PARA HTML
+   ESCAPAR TEXTO
 ===================================================== */
 
 function escapar(texto) {
