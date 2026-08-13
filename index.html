@@ -778,8 +778,8 @@
                     </h2>
 
                     <p>
-                        Consulta el consumo y promedio semanal
-                        por insumo y presentación.
+                        Consulta el consumo semanal
+                        de los insumos registrados.
                     </p>
 
                 </div>
@@ -870,45 +870,6 @@
 
 
             <!-- =================================================
-                 FILTROS DE CONSUMO
-            ================================================== -->
-
-            <div class="filtros-consumo">
-
-
-                <div class="campo">
-
-                    <label for="fechaConsumo">
-                        Semana de referencia
-                    </label>
-
-                    <input
-                        type="date"
-                        id="fechaConsumo"
-                        onchange="actualizarTextoSemana()"
-                    >
-
-                    <small
-                        id="textoRangoSemana"
-                        class="texto-rango-semana"
-                    ></small>
-
-                </div>
-
-
-                <button
-                    class="btn principal"
-                    onclick="calcularConsumo()"
-                >
-                    📊 Calcular consumo
-                </button>
-
-
-            </div>
-
-
-
-            <!-- =================================================
                  TABLA CONSUMO
             ================================================== -->
 
@@ -954,10 +915,6 @@
 
                             <th>
                                 Consumo semanal
-                            </th>
-
-                            <th>
-                                Promedio semanal
                             </th>
 
                         </tr>
