@@ -159,7 +159,6 @@ function iniciar() {
     cargarHistorialEntradas();
     cargarListaSalidas();
 
-    establecerFechaActual();
     establecerLimitesFechasExcel();
 
     const formIngreso = document.getElementById("formIngreso");
@@ -321,7 +320,6 @@ function mostrarVista(nombre) {
     if (nombre === "consumo") {
 
         establecerLimitesFechasExcel();
-        establecerFechaActual();
         calcularConsumo();
     }
 
@@ -1353,34 +1351,6 @@ function finDelDia(fecha) {
 }
 
 /* =====================================================
-   FECHA ACTUAL
-===================================================== */
-
-function establecerFechaActual() {
-
-    const campo =
-        document.getElementById(
-            "fechaConsumo"
-        );
-
-    if (!campo) return;
-
-    const hoy =
-        obtenerFechaLocal();
-
-    campo.max = hoy;
-
-    if (
-        !campo.value ||
-        campo.value > hoy
-    ) {
-        campo.value = hoy;
-    }
-
-    actualizarTextoSemana();
-}
-
-/* =====================================================
    LIMITES DE FECHAS PARA EXCEL
 ===================================================== */
 
@@ -1888,54 +1858,14 @@ function calcularConsumo() {
 
     if (!cuerpo) return;
 
-    const campo =
-        document.getElementById(
-            "fechaConsumo"
-        );
-
-    if (!campo) return;
-
+    // La semana de consumo se calcula automáticamente
+    // usando la fecha actual.
     const fechaSeleccionada =
-        campo.value;
-
-    const hoyTexto =
         obtenerFechaLocal();
 
-    /*
-       NO PERMITIR FUTURO
-    */
+    const hoyTexto =
+        fechaSeleccionada;
 
-    if (
-        !fechaSeleccionada
-    ) {
-
-        cuerpo.innerHTML = `
-            <tr>
-                <td colspan="10">
-                    Selecciona una fecha para calcular el consumo.
-                </td>
-            </tr>
-        `;
-
-        return;
-    }
-
-    if (
-        fechaSeleccionada >
-        hoyTexto
-    ) {
-
-        alert(
-            "No puedes consultar una semana futura."
-        );
-
-        campo.value =
-            hoyTexto;
-
-        actualizarTextoSemana();
-
-        return;
-    }
 
     const fechaSeleccionadaObj =
         fechaDesdeInput(
@@ -2057,9 +1987,9 @@ function calcularConsumo() {
 
         cuerpo.innerHTML = `
             <tr>
-                <td colspan="10">
+                <td colspan="9">
                     No existen salidas registradas
-                    para la semana seleccionada.
+                    para la semana actual.
                 </td>
             </tr>
         `;
@@ -2087,20 +2017,6 @@ function calcularConsumo() {
                 consumos[
                     inventarioId
                 ];
-
-            /*
-               Para el promedio semanal:
-               calculamos las semanas históricas
-               COMPLETAS/REGISTRADAS hasta la
-               semana seleccionada.
-            */
-
-            const promedio =
-                calcularPromedioSemanal(
-                    inventarioId,
-                    salidas,
-                    fechaSeleccionadaObj
-                );
 
             const fila =
                 document.createElement(
@@ -2163,110 +2079,12 @@ function calcularConsumo() {
                     </strong>
                 </td>
 
-                <td>
-                    <strong>
-                        ${promedio.toFixed(2)}
-                    </strong>
-                </td>
-
             `;
 
             cuerpo.appendChild(
                 fila
             );
         });
-}
-
-/* =====================================================
-   PROMEDIO SEMANAL
-===================================================== */
-
-function calcularPromedioSemanal(
-    inventarioId,
-    salidas,
-    fechaReferencia
-) {
-
-    const semanas = {};
-
-    salidas
-        .filter(
-            salida =>
-                salida.inventarioId ===
-                inventarioId
-        )
-        .forEach(salida => {
-
-            const fecha =
-                new Date(
-                    salida.fecha
-                );
-
-            if (
-                isNaN(
-                    fecha.getTime()
-                )
-            ) {
-                return;
-            }
-
-            /*
-               Solo semanas hasta la
-               semana de referencia.
-            */
-
-            const lunes =
-                obtenerLunes(fecha);
-
-            const lunesReferencia =
-                obtenerLunes(
-                    fechaReferencia
-                );
-
-            if (
-                lunes >
-                lunesReferencia
-            ) {
-                return;
-            }
-
-            const clave =
-                fechaClave(
-                    lunes
-                );
-
-            if (
-                !semanas[clave]
-            ) {
-                semanas[clave] = 0;
-            }
-
-            semanas[clave] +=
-                Number(
-                    salida.cantidad
-                );
-        });
-
-    const valores =
-        Object.values(
-            semanas
-        );
-
-    if (valores.length === 0) {
-        return 0;
-    }
-
-    const total =
-        valores.reduce(
-            (a, b) =>
-                a + b,
-            0
-        );
-
-    return (
-        total /
-        valores.length
-    );
 }
 
 /* =====================================================
@@ -2299,123 +2117,6 @@ function obtenerLunes(fecha) {
     );
 
     return lunes;
-}
-
-function fechaClave(fecha) {
-
-    const año =
-        fecha.getFullYear();
-
-    const mes =
-        String(
-            fecha.getMonth() + 1
-        ).padStart(2, "0");
-
-    const dia =
-        String(
-            fecha.getDate()
-        ).padStart(2, "0");
-
-    return `${año}-${mes}-${dia}`;
-}
-
-/* =====================================================
-   TEXTO DE SEMANA
-===================================================== */
-
-function actualizarTextoSemana() {
-
-    const campo =
-        document.getElementById(
-            "fechaConsumo"
-        );
-
-    const textoSemana =
-        document.getElementById(
-            "textoRangoSemana"
-        );
-
-    if (
-        !campo ||
-        !textoSemana
-    ) {
-        return;
-    }
-
-    const inputFecha =
-        campo.value;
-
-    if (!inputFecha) {
-
-        textoSemana.textContent =
-            "";
-
-        return;
-    }
-
-    const hoy =
-        obtenerFechaLocal();
-
-    if (
-        inputFecha > hoy
-    ) {
-
-        alert(
-            "No puedes consultar una fecha futura."
-        );
-
-        campo.value =
-            hoy;
-
-        actualizarTextoSemana();
-
-        return;
-    }
-
-    const fecha =
-        fechaDesdeInput(
-            inputFecha
-        );
-
-    if (!fecha) {
-        return;
-    }
-
-    const lunes =
-        obtenerLunes(fecha);
-
-    const domingo =
-        new Date(lunes);
-
-    domingo.setDate(
-        lunes.getDate() + 6
-    );
-
-    const hoyObj =
-        fechaDesdeInput(hoy);
-
-    /*
-       Mostrar solo hasta hoy
-       si la semana está en curso.
-    */
-
-    const fechaFinal =
-        domingo > hoyObj
-            ? hoyObj
-            : domingo;
-
-    const textoInicio =
-        formatearFecha(
-            fechaClave(lunes)
-        );
-
-    const textoFin =
-        formatearFecha(
-            fechaClave(fechaFinal)
-        );
-
-    textoSemana.textContent =
-        `Semana del ${textoInicio} al ${textoFin}`;
 }
 
 /* =====================================================
