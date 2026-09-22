@@ -1,83 +1,3 @@
-// ==========================================
-// 🔐 CONTROL DE SESIÓN (agregar al INICIO de app.js)
-// ==========================================
-let usuarioActual = null;
-
-async function verificarSesion() {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-        window.location.href = 'login.html';
-        return null;
-    }
-
-    const usuarioGuardado = sessionStorage.getItem('usuario_actual');
-
-    if (usuarioGuardado) {
-        usuarioActual = JSON.parse(usuarioGuardado);
-    } else {
-        // Si se recargó la página y no hay caché, lo recuperamos de la BD
-        const { data: perfil, error } = await supabase
-            .from('perfiles')
-            .select('id, nombre_completo, rol, sede_id, sedes(nombre)')
-            .eq('id', session.user.id)
-            .single();
-
-        if (error || !perfil) {
-            window.location.href = 'login.html';
-            return null;
-        }
-
-        usuarioActual = {
-            id: perfil.id,
-            nombre: perfil.nombre_completo,
-            rol: perfil.rol,
-            sede_id: perfil.sede_id,
-            sede_nombre: perfil.sedes ? perfil.sedes.nombre : 'Todas las sedes'
-        };
-        sessionStorage.setItem('usuario_actual', JSON.stringify(usuarioActual));
-    }
-
-    aplicarPermisosSegunRol();
-    return usuarioActual;
-}
-
-function aplicarPermisosSegunRol() {
-    // Mostrar nombre y sede en el header (si existe el elemento)
-    const infoUsuario = document.getElementById('infoUsuario');
-    if (infoUsuario) {
-        infoUsuario.textContent = `${usuarioActual.nombre} — ${usuarioActual.sede_nombre}`;
-    }
-
-    // Si es auxiliar, bloquear el selector de sede a la suya
-    const selectorSede = document.getElementById('selectorSede');
-    if (selectorSede && usuarioActual.rol === 'auxiliar') {
-        selectorSede.value = usuarioActual.sede_id;
-        selectorSede.disabled = true;
-    }
-
-    // Mostrar botón de "Panel Admin" solo si es admin
-    const btnPanelAdmin = document.getElementById('btnPanelAdmin');
-    if (btnPanelAdmin) {
-        btnPanelAdmin.style.display = usuarioActual.rol === 'admin' ? 'inline-block' : 'none';
-    }
-}
-
-function cerrarSesion() {
-    supabase.auth.signOut();
-    sessionStorage.removeItem('usuario_actual');
-    window.location.href = 'login.html';
-}
-
-// ⚠️ IMPORTANTE: llamar esto antes de cargar cualquier dato
-document.addEventListener('DOMContentLoaded', async () => {
-    const sesionOk = await verificarSesion();
-    if (sesionOk) {
-        // Aquí sigue el resto de tu código actual de carga de datos
-        // (inventario, salidas, etc.)
-    }
-});
-
 /* =====================================================
    CONTROL DE INVENTARIO
    LocalStorage
@@ -900,8 +820,8 @@ function cargarTablaInventario() {
 
             <td>
                 ${formatearFecha(
-            item.fechaVencimiento
-        )}
+                    item.fechaVencimiento
+                )}
             </td>
 
             <td>
@@ -912,17 +832,18 @@ function cargarTablaInventario() {
                 ${totalSalidas}
             </td>
 
-            <td class="existencia ${existencia <= 0
-                ? "cero"
-                : ""
+            <td class="existencia ${
+                existencia <= 0
+                    ? "cero"
+                    : ""
             }">
                 ${existencia}
             </td>
 
             <td>
                 ${formatearFechaHora(
-                item.fechaRegistro
-            )}
+                    item.fechaRegistro
+                )}
             </td>
 
             <td class="acciones">
@@ -993,8 +914,8 @@ function cargarHistorialEntradas() {
 
             <td>
                 ${formatearFechaHora(
-            item.fechaRegistro
-        )}
+                    item.fechaRegistro
+                )}
             </td>
 
             <td>
@@ -1027,8 +948,8 @@ function cargarHistorialEntradas() {
 
             <td>
                 ${formatearFecha(
-            item.fechaVencimiento
-        )}
+                    item.fechaVencimiento
+                )}
             </td>
 
             <td>
@@ -2039,7 +1960,7 @@ function calcularConsumo() {
 
             if (
                 !consumos[
-                salida.inventarioId
+                    salida.inventarioId
                 ]
             ) {
 
@@ -2094,7 +2015,7 @@ function calcularConsumo() {
 
             const consumoSemana =
                 consumos[
-                inventarioId
+                    inventarioId
                 ];
 
             const fila =
@@ -2106,50 +2027,50 @@ function calcularConsumo() {
 
                 <td>
                     ${escapar(
-                item.insumo
-            )}
+                        item.insumo
+                    )}
                 </td>
 
                 <td>
                     ${escapar(
-                item.presentacion
-            )}
+                        item.presentacion
+                    )}
                 </td>
 
                 <td>
                     ${escapar(
-                item.marca
-            )}
+                        item.marca
+                    )}
                 </td>
 
                 <td>
                     ${escapar(
-                item.serie
-            )}
+                        item.serie
+                    )}
                 </td>
 
                 <td>
                     ${escapar(
-                item.registroSanitario
-            )}
+                        item.registroSanitario
+                    )}
                 </td>
 
                 <td>
                     ${escapar(
-                item.clasificacionRiesgo
-            )}
+                        item.clasificacionRiesgo
+                    )}
                 </td>
 
                 <td>
                     ${escapar(
-                item.lote
-            )}
+                        item.lote
+                    )}
                 </td>
 
                 <td>
                     ${formatearFecha(
-                item.fechaVencimiento
-            )}
+                        item.fechaVencimiento
+                    )}
                 </td>
 
                 <td>
@@ -2270,6 +2191,7 @@ function formatearFechaHora(
         `${dia}/${mes}/${año} ${hora}:${min}`
     );
 }
+
 /* =====================================================
    RESPALDO COMPLETO PARA MIGRACIÓN (TEMPORAL)
 ===================================================== */
@@ -2344,4 +2266,3 @@ function escapar(texto) {
             "&#039;"
         );
 }
-
