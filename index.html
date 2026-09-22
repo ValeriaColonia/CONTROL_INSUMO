@@ -11,17 +11,6 @@
 </head>
 
 <body>
-    <div
-        style="background:#2c3e50; color:white; padding:10px 20px; display:flex; justify-content:space-between; align-items:center;">
-        <span id="infoUsuario">Cargando usuario...</span>
-        <div>
-            <button id="btnPanelAdmin" onclick="window.location.href='admin.html'"
-                style="display:none; margin-right:10px;">
-                🛠️ Panel Admin
-            </button>
-            <button onclick="cerrarSesion()">🚪 Cerrar sesión</button>
-        </div>
-    </div>
 
     <!-- =====================================================
          ENCABEZADO
@@ -63,7 +52,10 @@
 
                 <!-- INVENTARIO -->
 
-                <button class="menu-card" onclick="mostrarVista('inventario')">
+                <button
+                    class="menu-card"
+                    onclick="mostrarVista('inventario')"
+                >
 
                     <span class="icono">📦</span>
 
@@ -79,7 +71,10 @@
 
                 <!-- REGISTRAR ENTRADA -->
 
-                <button class="menu-card" onclick="nuevoIngreso()">
+                <button
+                    class="menu-card"
+                    onclick="nuevoIngreso()"
+                >
 
                     <span class="icono">➕</span>
 
@@ -95,7 +90,10 @@
 
                 <!-- REGISTRAR SALIDA -->
 
-                <button class="menu-card" onclick="mostrarVista('salida')">
+                <button
+                    class="menu-card"
+                    onclick="mostrarVista('salida')"
+                >
 
                     <span class="icono">📤</span>
 
@@ -111,7 +109,10 @@
 
                 <!-- CONSUMO -->
 
-                <button class="menu-card" onclick="mostrarVista('consumo')">
+                <button
+                    class="menu-card"
+                    onclick="mostrarVista('consumo')"
+                >
 
                     <span class="icono">📊</span>
 
@@ -161,21 +162,31 @@
 
                     <!-- NUEVA ENTRADA -->
 
-                    <button class="btn principal" onclick="nuevoIngreso()">
+                    <button
+                        class="btn principal"
+                        onclick="nuevoIngreso()"
+                    >
                         ➕ Registrar nueva entrada
                     </button>
 
 
                     <!-- CAMBIAR VISTA -->
 
-                    <button class="btn principal" id="btnCambiarVistaInv" onclick="alternarVistaInventario()">
+                    <button
+                        class="btn principal"
+                        id="btnCambiarVistaInv"
+                        onclick="alternarVistaInventario()"
+                    >
                         📋 Ver historial de entradas
                     </button>
 
 
                     <!-- VOLVER -->
 
-                    <button class="btn secundario" onclick="mostrarVista('inicio')">
+                    <button
+                        class="btn secundario"
+                        onclick="mostrarVista('inicio')"
+                    >
                         ← Volver
                     </button>
 
@@ -189,7 +200,10 @@
                  INVENTARIO ACTUAL
             ================================================== -->
 
-            <div class="tabla-contenedor" id="contenedorTablaInventario">
+            <div
+                class="tabla-contenedor"
+                id="contenedorTablaInventario"
+            >
 
                 <table id="tablaInventario">
 
@@ -256,7 +270,11 @@
                  HISTORIAL DE ENTRADAS
             ================================================== -->
 
-            <div class="tabla-contenedor" id="contenedorHistorialEntradas" style="display: none;">
+            <div
+                class="tabla-contenedor"
+                id="contenedorHistorialEntradas"
+                style="display: none;"
+            >
 
                 <div class="encabezado-tabla">
 
@@ -272,7 +290,7 @@
                         </p>
 
                     </div>
-
+                    
                 </div>
 
 
@@ -365,7 +383,10 @@
                 </div>
 
 
-                <button class="btn secundario" onclick="mostrarVista('inicio')">
+                <button
+                    class="btn secundario"
+                    onclick="mostrarVista('inicio')"
+                >
                     ← Volver
                 </button>
 
@@ -378,7 +399,10 @@
 
                 <!-- ID PARA EDICIÓN -->
 
-                <input type="hidden" id="registroId">
+                <input
+                    type="hidden"
+                    id="registroId"
+                >
 
 
                 <div class="form-grid">
@@ -392,7 +416,11 @@
                             Insumo *
                         </label>
 
-                        <select id="insumo" required onchange="completarPresentacion()">
+                        <select
+                            id="insumo"
+                            required
+                            onchange="completarPresentacion()"
+                        >
 
                             <option value="">
                                 Seleccione un insumo
@@ -412,7 +440,11 @@
                             Presentación *
                         </label>
 
-                        <input type="text" id="presentacion" required>
+                        <input
+                            type="text"
+                            id="presentacion"
+                            required
+                        >
 
                     </div>
 
@@ -426,7 +458,10 @@
                             Marca
                         </label>
 
-                        <input type="text" id="marca">
+                        <input
+                            type="text"
+                            id="marca"
+                        >
 
                     </div>
 
@@ -440,7 +475,10 @@
                             Serie
                         </label>
 
-                        <input type="text" id="serie">
+                        <input
+                            type="text"
+                            id="serie"
+                        >
 
                     </div>
 
@@ -454,7 +492,10 @@
                             Registro sanitario / INVIMA
                         </label>
 
-                        <input type="text" id="registroSanitario">
+                        <input
+                            type="text"
+                            id="registroSanitario"
+                        >
 
                     </div>
 
@@ -468,7 +509,9 @@
                             Clasificación de riesgo
                         </label>
 
-                        <select id="clasificacionRiesgo">
+                        <select
+                            id="clasificacionRiesgo"
+                        >
 
                             <option value="">
                                 Seleccione
@@ -508,7 +551,10 @@
                             Lote
                         </label>
 
-                        <input type="text" id="lote">
+                        <input
+                            type="text"
+                            id="lote"
+                        >
 
                     </div>
 
@@ -522,7 +568,10 @@
                             Fecha de vencimiento
                         </label>
 
-                        <input type="date" id="fechaVencimiento">
+                        <input
+                            type="date"
+                            id="fechaVencimiento"
+                        >
 
                     </div>
 
@@ -536,7 +585,13 @@
                             Cantidad ingresada *
                         </label>
 
-                        <input type="number" id="cantidad" min="1" step="1" required>
+                        <input
+                            type="number"
+                            id="cantidad"
+                            min="1"
+                            step="1"
+                            required
+                        >
 
                     </div>
 
@@ -550,7 +605,11 @@
                             Fecha de entrada
                         </label>
 
-                        <input type="date" id="fechaIngreso" readonly>
+                        <input
+                            type="date"
+                            id="fechaIngreso"
+                            readonly
+                        >
 
                     </div>
 
@@ -564,12 +623,19 @@
                 <div class="acciones-formulario">
 
 
-                    <button type="submit" class="btn principal">
+                    <button
+                        type="submit"
+                        class="btn principal"
+                    >
                         💾 Guardar entrada
                     </button>
 
 
-                    <button type="button" class="btn secundario" onclick="mostrarVista('inicio')">
+                    <button
+                        type="button"
+                        class="btn secundario"
+                        onclick="mostrarVista('inicio')"
+                    >
                         Cancelar
                     </button>
 
@@ -604,7 +670,10 @@
                 </div>
 
 
-                <button class="btn secundario" onclick="mostrarVista('inicio')">
+                <button
+                    class="btn secundario"
+                    onclick="mostrarVista('inicio')"
+                >
                     ← Volver
                 </button>
 
@@ -626,7 +695,10 @@
                             Insumo *
                         </label>
 
-                        <select id="salidaInsumo" required>
+                        <select
+                            id="salidaInsumo"
+                            required
+                        >
 
                             <option value="">
                                 Seleccione un insumo
@@ -646,7 +718,13 @@
                             Cantidad *
                         </label>
 
-                        <input type="number" id="salidaCantidad" min="1" step="1" required>
+                        <input
+                            type="number"
+                            id="salidaCantidad"
+                            min="1"
+                            step="1"
+                            required
+                        >
 
                     </div>
 
@@ -658,12 +736,19 @@
                 <div class="acciones-formulario">
 
 
-                    <button type="submit" class="btn principal">
+                    <button
+                        type="submit"
+                        class="btn principal"
+                    >
                         📤 Registrar salida
                     </button>
 
 
-                    <button type="button" class="btn secundario" onclick="mostrarVista('inicio')">
+                    <button
+                        type="button"
+                        class="btn secundario"
+                        onclick="mostrarVista('inicio')"
+                    >
                         Cancelar
                     </button>
 
@@ -705,14 +790,20 @@
 
                     <!-- EXCEL SALIDAS -->
 
-                    <button class="btn principal btn-excel" onclick="descargarExcelSalidas()">
+                    <button
+                        class="btn principal btn-excel"
+                        onclick="descargarExcelSalidas()"
+                    >
                         📥 Descargar Excel de salidas
                     </button>
 
 
                     <!-- EXCEL ENTRADAS -->
 
-                    <button class="btn principal btn-excel" onclick="descargarExcelEntradas()">
+                    <button
+                        class="btn principal btn-excel"
+                        onclick="descargarExcelEntradas()"
+                    >
                         📥 Descargar Excel de entradas
                     </button>
 
@@ -722,7 +813,10 @@
 
                     <!-- VOLVER -->
 
-                    <button class="btn secundario" onclick="mostrarVista('inicio')">
+                    <button
+                        class="btn secundario"
+                        onclick="mostrarVista('inicio')"
+                    >
                         ← Volver
                     </button>
 
@@ -745,7 +839,10 @@
                         Fecha inicial
                     </label>
 
-                    <input type="date" id="fechaExcelInicio">
+                    <input
+                        type="date"
+                        id="fechaExcelInicio"
+                    >
 
                 </div>
 
@@ -756,7 +853,10 @@
                         Fecha final
                     </label>
 
-                    <input type="date" id="fechaExcelFin">
+                    <input
+                        type="date"
+                        id="fechaExcelFin"
+                    >
 
                 </div>
 
@@ -857,7 +957,11 @@
 
             <div class="gatito-container">
 
-                <img src="gatito.jpg" alt="Gatito tierno" class="gatito-img">
+                <img
+                    src="gatito.jpg"
+                    alt="Gatito tierno"
+                    class="gatito-img"
+                >
 
             </div>
 
@@ -873,17 +977,6 @@
 
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
-    <!-- ================================================
-     SUPABASE - LIBRERÍA OFICIAL
-     ================================================ -->
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- ================================================
-     SUPABASE - CONFIGURACIÓN DEL PROYECTO
-     ================================================ -->
-
-    <script src="supabaseClient.js"></script>
 
     <!-- =====================================================
          JAVASCRIPT DEL SISTEMA
